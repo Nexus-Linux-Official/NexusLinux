@@ -1,8 +1,8 @@
 use anyhow::Result;
 use clap::{Parser, Subcommand};
-use image::{ImageBuffer, Rgb, RgbImage};
+use colored::*;
+use image::{Rgb, RgbImage};
 use std::path::PathBuf;
-use walkdir::WalkDir;
 
 #[derive(Parser, Debug)]
 #[command(name = "nexus-theme", version, about = "Nexus Linux theme and wallpaper utilities")]
@@ -89,6 +89,7 @@ fn generate_wallpaper(output: &PathBuf, width: u32, height: u32) -> Result<()> {
             let b = (0x2e as f32 + (0x1a as f32 - 0x2e as f32) * y as f32 / height as f32) as u8;
             img.put_pixel(x, y, Rgb([r, g, b]));
         }
+    }
 
     // Draw circle
     let cx = width / 2;
