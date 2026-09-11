@@ -1,11 +1,7 @@
+write_file 'localpkgs/nexus-calamares/metadata.json' 644 <<'NEXUS_EOF'
 {
     "KPlugin": {
-        "Authors": [
-            {
-                "Name": "Nexus Linux Team",
-                "Email": "nexus@nexuslinux.org"
-            }
-        ],
+        "Authors": [{"Name": "Nexus Linux Team", "Email": "nexus@nexuslinux.org"}],
         "Category": "Global Themes",
         "Description": "Nexus Linux default look and feel",
         "EnabledByDefault": true,
@@ -26,3 +22,4 @@
     "Website": "https://nexuslinux.org",
     "License": "GPL-3.0-or-later"
 }
+NEXUS_EOF
