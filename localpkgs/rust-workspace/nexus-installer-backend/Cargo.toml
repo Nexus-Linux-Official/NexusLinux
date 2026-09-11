@@ -16,3 +16,6 @@ tokio = { workspace = true }
 thiserror = { workspace = true }
 indicatif = { workspace = true }
 colored = { workspace = true }
+[[bin]]
+name = "nexus-installer"
+path = "src/main.rs"
