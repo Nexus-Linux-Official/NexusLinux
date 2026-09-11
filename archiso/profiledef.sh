@@ -1,3 +1,4 @@
+write_file 'archiso/profiledef.sh' 644 <<'NEXUS_EOF'
 #!/usr/bin/env bash
 # shellcheck disable=SC2034
 
@@ -8,10 +9,7 @@ iso_application="Nexus Linux Live/Rescue DVD"
 iso_version="$(date --date="@${SOURCE_DATE_EPOCH:-$(date +%s)}" +%Y.%m.%d)"
 install_dir="arch"
 buildmodes=('iso')
-## GRUB
 bootmodes=('bios.syslinux' 'uefi.grub')
-## systemd-boot
-#bootmodes=('bios.syslinux' 'uefi.systemd-boot')
 arch="x86_64"
 pacman_conf="pacman.conf"
 airootfs_image_type="squashfs"
@@ -38,3 +36,4 @@ file_permissions=(
   ["/usr/share/nexus-calamares/write-os-release.sh"]="0:0:755"
   ["/root/customize_airootfs.sh"]="0:0:755"
 )
+NEXUS_EOF
