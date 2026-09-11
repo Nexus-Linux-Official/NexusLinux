@@ -1,0 +1,26 @@
+# py-dependency-graph Skill
+
+**Kategori:** py
+**Tetikleyici:** `py-dependency-graph`
+**Dosya:** `.claude/SKILLS/py-dependency-graph/py-dependency-graph.md:1`
+
+## Açıklama
+Bu skill `py-dependency-graph` için satır satır debug ve fix sağlar.
+
+## Hedef Dosyalar
+- İlgili `file:line` referansları bu skill'e özeldir (bkz. SKILLS listesi).
+
+## Adımlar
+1. `Read` ile hedef dosyayı oku
+2. Hata/düzenlenecek satırı tespit et
+3. `Edit` ile düzelt
+4. `Bash` ile doğrula (cargo check / shellcheck / namcap)
+5. Gerekirse `git add/commit`
+
+## Örnek Tetik
+```
+Kullanıcı: "py-dependency-graph"
+```
+
+---
+*Otomatik oluşturuldu — `README.md:1` yapısına uygun.*
