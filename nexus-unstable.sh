@@ -70,7 +70,7 @@ ls -lh *.pkg.tar.zst | awk '{print $9, $5}'
 
 # Rebuild repo database
 echo ">>> Rebuilding repo database..."
-repo-add -f nexus.db.tar.gz *.pkg.tar.zst
+repo-add nexus.db.tar.gz *.pkg.tar.zst
 pacman -Sy || true
 
 # Phase 3: Modify package list for ISO
