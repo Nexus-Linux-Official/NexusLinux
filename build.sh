@@ -41,7 +41,7 @@ ls -lh "$LOCALREPO"/*.pkg.tar.zst
 echo "=== [5/6] Rebuilding local repo database ==="
 cd "$LOCALREPO"
 repo-add nexus.db.tar.gz *.pkg.tar.zst
-pacman -Sy || true
+sudo pacman -Sy || true
 
 echo "=== [6/6] Building ISO ==="
 cd "$ROOT"
