@@ -103,6 +103,6 @@ package_nexus-theme() {
 package_nexus-build() {
     pkgdesc="Nexus Linux build helpers and validation tools"
     depends=(toml walkdir sha2 colored indicatif)
-    install -Dm755 "${srcdir}/rust-workspace/target/release/nexus-build" \
+    install -Dm755 "${srcdir}/rust-workspace/target/release/nexus-build-helpers" \
         "${pkgdir}/usr/bin/nexus-build"
 }
