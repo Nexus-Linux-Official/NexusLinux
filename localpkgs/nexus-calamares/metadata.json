@@ -1,4 +1,23 @@
 {
+    "KPlugin": {
+        "Authors": [
+            {
+                "Name": "Nexus Linux Team",
+                "Email": "nexus@nexuslinux.org"
+            }
+        ],
+        "Category": "Global Themes",
+        "Description": "Nexus Linux default look and feel",
+        "EnabledByDefault": true,
+        "Icon": "preferences-desktop-theme",
+        "Id": "nexus",
+        "License": "GPL-3.0-or-later",
+        "Name": "Nexus",
+        "Version": "1.0",
+        "Website": "https://nexuslinux.org"
+    },
+    "KPackageStructure": "Plasma/LookAndFeel",
+    "X-Plasma-API-Minimum-Version": "6.0",
     "Name": "Nexus",
     "Comment": "Nexus Linux default look and feel",
     "Icon": "preferences-desktop-theme",
