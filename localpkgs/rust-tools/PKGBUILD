@@ -27,12 +27,12 @@ prepare() {
     rm -rf "${srcdir}/rust-workspace"
     cp -r /home/cahit/Projeler/nexus-live/localpkgs/rust-workspace "${srcdir}/"
     cd "${srcdir}/rust-workspace"
-    cargo fetch --locked --target x86_64-unknown-linux-gnu
+    cargo fetch --target x86_64-unknown-linux-gnu
 }
 
 build() {
     cd "${srcdir}/rust-workspace"
-    cargo build --release --frozen --workspace
+    cargo build --release --workspace
 }
 
 package_nexus-info() {
