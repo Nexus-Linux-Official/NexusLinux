@@ -66,14 +66,12 @@ package_nexus-version() {
 
 package_nexus-check() {
     pkgdesc="Nexus Linux system health check tool"
-    depends=(sysinfo)
     install -Dm755 "${srcdir}/rust-workspace/target/release/nexus-check" \
         "${pkgdir}/usr/bin/nexus-check"
 }
 
 package_nexus-hardware() {
     pkgdesc="Nexus Linux hardware detection utility"
-    depends=(sysinfo nix)
     install -Dm755 "${srcdir}/rust-workspace/target/release/nexus-hardware" \
         "${pkgdir}/usr/bin/nexus-hardware"
 }
@@ -88,21 +86,18 @@ package_nexus-micro() {
 
 package_nexus-installer() {
     pkgdesc="Nexus Linux package installer backend"
-    depends=(alpm)
     install -Dm755 "${srcdir}/rust-workspace/target/release/nexus-installer" \
         "${pkgdir}/usr/bin/nexus-installer"
 }
 
 package_nexus-theme() {
     pkgdesc="Nexus Linux theme and wallpaper utilities"
-    depends=(image walkdir)
     install -Dm755 "${srcdir}/rust-workspace/target/release/nexus-theme" \
         "${pkgdir}/usr/bin/nexus-theme"
 }
 
 package_nexus-build() {
     pkgdesc="Nexus Linux build helpers and validation tools"
-    depends=(toml walkdir sha2 colored indicatif)
     install -Dm755 "${srcdir}/rust-workspace/target/release/nexus-build-helpers" \
         "${pkgdir}/usr/bin/nexus-build"
 }

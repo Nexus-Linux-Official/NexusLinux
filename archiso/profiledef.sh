@@ -1,4 +1,3 @@
-write_file 'archiso/profiledef.sh' 644 <<'NEXUS_EOF'
 #!/usr/bin/env bash
 # shellcheck disable=SC2034
 
@@ -36,4 +35,3 @@ file_permissions=(
   ["/usr/share/nexus-calamares/write-os-release.sh"]="0:0:755"
   ["/root/customize_airootfs.sh"]="0:0:755"
 )
-NEXUS_EOF
