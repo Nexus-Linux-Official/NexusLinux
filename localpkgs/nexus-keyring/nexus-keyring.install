@@ -3,24 +3,13 @@ post_install() {
     if [[ ! -d /etc/pacman.d/gnupg ]]; then
         pacman-key --init
     fi
-    
-    # Add and sign Nexus key
-    if [[ -f /usr/share/pacman/keyrings/nexus.gpg ]]; then
-        pacman-key --add /usr/share/pacman/keyrings/nexus.gpg
-        # Note: You must manually lsign the key after verifying the fingerprint:
-        # pacman-key --lsign-key "Nexus Linux Packaging"
-        # Or by fingerprint: pacman-key --lsign-key FINGERPRINT
-    fi
-    
-    # Import trusted keys
-    if [[ -f /usr/share/pacman/keyrings/nexus-trusted ]]; then
-        while read -r line; do
-            [[ -n "$line" && ! "$line" =~ ^# ]] && pacman-key --finger "$line" 2>/dev/null || true
-        done < /usr/share/pacman/keyrings/nexus-trusted
-    fi
-    
-    # Update trust database
-    pacman-key --populate archlinux
+
+    # Populate BOTH keyrings. `--populate nexus` imports nexus.gpg AND
+    # locally signs the fingerprint listed in nexus-trusted (':4:' = fully
+    # trusted). Never use bare `pacman-key --add` here: an added-but-unsigned
+    # key cannot verify packages under `SigLevel = Required`, which is exactly
+    # what broke the [nexus] repo on the live ISO / installed systems.
+    pacman-key --populate nexus archlinux
 }
 
 post_upgrade() {
@@ -28,6 +17,6 @@ post_upgrade() {
 }
 
 post_remove() {
-    # Don't remove key on package removal to avoid breaking installed systems
+    # Keep the key on removal to avoid breaking installed systems
     true
 }
