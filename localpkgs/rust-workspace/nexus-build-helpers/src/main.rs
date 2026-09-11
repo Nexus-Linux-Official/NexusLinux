@@ -154,7 +154,7 @@ fn validate_pkgs(dir: &PathBuf) -> Result<()> {
     }
 
     pb.finish_with_message(format!("Validated {} packages, {} errors, {} warnings", 
-        pb.length(), errors, warnings));
+        pb.length().unwrap_or(0), errors, warnings));
 
     if errors > 0 {
         std::process::exit(1);
@@ -162,7 +162,7 @@ fn validate_pkgs(dir: &PathBuf) -> Result<()> {
     Ok(())
 }
 
-fn validate_pkgbuild(path: &PathBuf) -> Result<()> {
+fn validate_pkgbuild(path: &std::path::Path) -> Result<()> {
     let content = fs::read_to_string(path)?;
 
     // Check required fields
