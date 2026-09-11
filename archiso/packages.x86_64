@@ -157,6 +157,9 @@ plasma-nm
 plasma-pa
 plasma-thunderbolt
 plasma-workspace
+kde-applications
+gnome
+gnome-extra
 polkit
 polkit-kde-agent
 power-profiles-daemon
