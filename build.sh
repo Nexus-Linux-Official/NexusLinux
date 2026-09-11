@@ -11,14 +11,15 @@ echo "=== [1/6] Rust workspace already fixed (skip) ==="
 echo "=== [2/6] Building nexus-rust-tools ==="
 cd "$LOCALPKGS/rust-tools"
 rm -rf pkg src
-makepkg --noconfirm
+makepkg -f --noconfirm
 
 echo "=== [3/6] Building other local packages ==="
 for pkg in nexus-branding nexus-wallpapers nexus-keyring nexus-calamares nexus-kde-settings; do
     if [ -d "$LOCALPKGS/$pkg" ]; then
         cd "$LOCALPKGS/$pkg"
         rm -rf pkg src 2>/dev/null || true
-        makepkg --noconfirm
+        rm -f *.pkg.tar.zst 2>/dev/null || true
+        makepkg -f --noconfirm
     fi
 done
 # Calamares from AUR build dir if exists, otherwise skip (already in localrepo)
