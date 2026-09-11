@@ -10,8 +10,8 @@ for conf in netinstall.yaml packagechooser_desktop.conf shellprocess.conf; do
 done
 
 # Bake Nexus branding into Calamares at build time
-if [ -d /usr/share/nexus-calamares/branding/nexus ]; then
-    cp -r /usr/share/nexus-calamares/branding/nexus /usr/share/calamares/branding/nexus
+if [ -d /usr/share/nexus-calamares/look-and-feel/nexus ]; then
+    cp -r /usr/share/nexus-calamares/look-and-feel/nexus /usr/share/calamares/branding/nexus
 fi
 if [ -f /usr/share/calamares/settings_online.conf ]; then
     install -Dm644 /usr/share/calamares/settings_online.conf /etc/calamares/settings.conf
@@ -33,9 +33,10 @@ for conf in welcome.conf shellprocess-before.conf users.conf; do
     fi
 done
 
-sed -i 's/CachyOS/Nexus Linux/g' /etc/calamares/modules/welcome.conf
-sed -i 's/CachyOS/Nexus Linux/g' /etc/calamares/modules/shellprocess-before.conf
-sed -i 's/cachyos-${cpu}/nexus-${cpu}/' /etc/calamares/modules/users.conf
+# Only sed files that actually exist (some modules don't ship default configs)
+[ -f /etc/calamares/modules/welcome.conf ] && sed -i 's/CachyOS/Nexus Linux/g' /etc/calamares/modules/welcome.conf
+[ -f /etc/calamares/modules/shellprocess-before.conf ] && sed -i 's/CachyOS/Nexus Linux/g' /etc/calamares/modules/shellprocess-before.conf
+[ -f /etc/calamares/modules/users.conf ] && sed -i 's/cachyos-${cpu}/nexus-${cpu}/' /etc/calamares/modules/users.conf
 
 # Apply the Nexus Look-and-Feel global theme BEFORE skeleton copy.
 # We now ship a complete "Nexus" look-and-feel theme in the nexus-calamares package.

@@ -30,8 +30,31 @@ localpkgs/nexus-mangowc-dms/cat-dms/
 localpkgs/nexus-micro-settings/cachyos-micro-settings/
 localpkgs/nexus-packageinstaller/packageinstaller/
 localpkgs/nexus-zsh-config/cachyos-zsh-config/
+# Generic makepkg src/pkg but keep rust-workspace
 **/src/
+!localpkgs/rust-workspace/src/
+!localpkgs/rust-workspace/**/src/
+!localpkgs/rust-workspace/**/src/**
 **/pkg/
+!localpkgs/rust-workspace/pkg/
+!localpkgs/rust-workspace/**/pkg/
 
 # cloudflare-warp-bin: upstream tree with its own .git + makepkg artefacts
 cloudflare-warp-bin/
+
+# Ignore local build clones/symlinks in rust-tools
+localpkgs/rust-tools/NexusLinux/
+localpkgs/rust-tools/rust-workspace
+# Ignore local repo built packages and out
+localrepo/*.pkg.tar.zst
+localrepo/*.db*
+localrepo/*.files*
+out/
+build/
+localpkgs/rust-workspace/target/
+.calamares-pkgbuild/
+archiso/packages.x86_64.unstable
+localpkgs/nexus-keyring/nexus.gpg
+localpkgs/nexus-keyring/nexus-revoked
+localpkgs/nexus-keyring/nexus-trusted
+localpkgs/nexus-keyring/*.pkg.tar.zst

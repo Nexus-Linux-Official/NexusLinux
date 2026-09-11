@@ -13,7 +13,13 @@ export LC_MESSAGES=C
 export LANG=C
 
 disable_colors(){
-    unset ALL_OFF BOLD BLUE GREEN RED YELLOW
+    ALL_OFF=""
+    BOLD=""
+    BLUE=""
+    GREEN=""
+    RED=""
+    YELLOW=""
+    readonly ALL_OFF BOLD BLUE GREEN RED YELLOW
 }
 
 enable_colors(){
