@@ -1,5 +1,6 @@
 use anyhow::Result;
 use clap::Parser;
+use colored::*;
 use serde::{Deserialize, Serialize};
 use std::fs;
 use std::process::Command;
