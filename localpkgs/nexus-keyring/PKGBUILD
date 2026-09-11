@@ -1,37 +1,38 @@
 # Maintainer: Nexus Linux <nexus@nexuslinux.org>
 pkgname=nexus-keyring
 pkgver=1.0
-pkgrel=1
+pkgrel=2
 pkgdesc="Nexus Linux package signing keys"
 arch=(any)
 url="https://github.com/nexuslinux-os/NexusLinux"
 license=(GPL-3.0-or-later)
 install=nexus-keyring.install
+
+# The keyring files (nexus.gpg / nexus-trusted / nexus-revoked) are produced
+# by gen-nexus-keyring.sh, which keeps a persistent signing key under ./gnupg/
+# so the fingerprint stays stable across rebuilds. They are intentionally
+# not tracked in git (the private key must never be committed).
+#
+# If the files are missing (fresh clone), prepare() generates a real key
+# automatically, so the package can NEVER again ship the invalid placeholder
+# armor block that made `pacman-key --populate` fail with:
+#   gpg: import from '.../nexus.gpg' failed: Invalid keyring
+#   ==> ERROR: A specified keyfile could not be added to the keyring.
+
+prepare() {
+    if [[ ! -s "$startdir/nexus.gpg" ]]; then
+        echo "nexus-keyring: no keyring found; generating a persistent Nexus master key..."
+        bash "$startdir/gen-nexus-keyring.sh"
+    fi
+}
+
 package() {
     install -dm755 "$pkgdir/usr/share/pacman/keyrings"
-    
-    # Create placeholder keyring files
-    # In production, replace with actual Nexus master key
-    # Generate with: gpg --full-generate-key (RSA 4096, no expiry)
-    # Then: gpg --export --armor "Nexus Linux Packaging" > nexus.gpg
-    install -Dm644 /dev/stdin "$pkgdir/usr/share/pacman/keyrings/nexus.gpg" <<'EOF'
------BEGIN PGP PUBLIC KEY BLOCK-----
-# PLACEHOLDER - Replace with actual Nexus master key
-# Generate with: gpg --full-generate-key (RSA 4096, no expiry)
-# Then: gpg --export --armor "Nexus Linux Packaging" > nexus.gpg
-# DO NOT USE THIS PLACEHOLDER IN PRODUCTION
------END PGP PUBLIC KEY BLOCK-----
-EOF
-    
-    # Trusted keys file (key fingerprints, one per line)
-    install -Dm644 /dev/stdin "$pkgdir/usr/share/pacman/keyrings/nexus-trusted" <<'EOF'
-# Nexus Linux trusted key fingerprints
-# Format: <fingerprint>:<ownertrust>
-# Example: F4C57604C90E90CD6AB3633F2AA4846E14CBE512:4:
-# Add actual fingerprint after generating the key
-# Generate fingerprint with: gpg --fingerprint "Nexus Linux Packaging"
-EOF
-    
-    # Revoked keys file (empty)
-    touch "$pkgdir/usr/share/pacman/keyrings/nexus-revoked"
+
+    install -Dm644 "$startdir/nexus.gpg" \
+        "$pkgdir/usr/share/pacman/keyrings/nexus.gpg"
+    install -Dm644 "$startdir/nexus-trusted" \
+        "$pkgdir/usr/share/pacman/keyrings/nexus-trusted"
+    install -Dm644 "$startdir/nexus-revoked" \
+        "$pkgdir/usr/share/pacman/keyrings/nexus-revoked"
 }
