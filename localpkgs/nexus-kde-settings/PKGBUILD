@@ -15,10 +15,10 @@ source=(
     plasma-org.kde.plasma.desktop-appletsrc
     nexus-kde-settings.install
 )
-sha256sums=('5e6626cd390f61965810581125d6d673dde0c031b231daf4c256dd85f7bf13e6'
+sha256sums=('dfb69ee1d40c409050d1406cc507737f5290e3036f9b0829ed992de05f7e2d46'
            '474d3235453cb5d6d028acb8214943e116e4f19ad52f72a86af5b9b7b774469a'
-           'f7d42bb882633d4f01fe584318bbab5d0f29b09ff1059b0e19f802b74f65303d'
-           'd6939b163c5906f41056597c05ec107d382cabb1ec2ee9a2bdada79ebbc96576'
+           '4ee9717c85f4df469d80cfe17f0451eb6e57c375f5b446aa7f79ee3a86dd0dbb'
+           'a7d764c2673fad02589caa41581907b1da5c58efc36f648c07b203499712aa7e'
            '9fd89f66bd62f4710bcf8d5feff2973a6131140d3018f7e629432347b66f8a6f')
 
 package() {
