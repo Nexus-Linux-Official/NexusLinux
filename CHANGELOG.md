@@ -1,6 +1,6 @@
 # Nexus Linux Changelog
 
-## 2026-09-11 — First Stable ISO (v1.0.1 / 2026.09.11)
+## 2026-09-11 — First Stable ISO (v0.0.3 / 2026.09.11)
 
 ### ISO Build — Stable Success (2.8 GB)
 * `nexus-unstable-2026.09.06-x86_64.iso` → `nexus-2026.09.11-x86_64.iso` stable (2.8 GB, `out/desktop/`), `SHA256SUMS` + `.img` valid
