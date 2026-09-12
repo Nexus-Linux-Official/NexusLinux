@@ -58,3 +58,4 @@ localpkgs/nexus-keyring/nexus.gpg
 localpkgs/nexus-keyring/nexus-revoked
 localpkgs/nexus-keyring/nexus-trusted
 localpkgs/nexus-keyring/*.pkg.tar.zst
+*.pkg.tar.zst.bak linguist-vendored
