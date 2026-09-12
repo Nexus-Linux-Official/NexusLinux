@@ -146,7 +146,7 @@ pipewire-alsa
 pipewire-jack
 pipewire-pulse
 plasma-desktop
-plasma-discover
+discover
 systemsettings
 plasma-integration
 plasma-nm
@@ -198,4 +198,4 @@ xdg-utils
 xfsprogs
 xl2tpd
 plymouth
-neofetch
+fastfetch

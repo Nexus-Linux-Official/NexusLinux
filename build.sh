@@ -43,7 +43,7 @@ cd "$LOCALREPO"
 repo-add nexus.db.tar.gz *.pkg.tar.zst
 echo ">>> Syncing from web latest stable (Arch + KDE Plasma 6.7.5)..."
 sudo pacman -Syy || true
-sudo pacman -Sy --needed archlinux-keyring nexus-keyring || true
+sudo pacman -Sy --needed archlinux-keyring || true
 
 echo "=== [6/6] Building ISO ==="
 cd "$ROOT"
