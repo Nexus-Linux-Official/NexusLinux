@@ -121,10 +121,11 @@ On the live desktop Calamares opens directly (autostart entry), instead of a wel
 
 ## DE Selection
 
-Only 3 desktop environments available in Calamares:
+Only 4 desktop environments available in Calamares:
 - **KDE Plasma** (recommended, default)
 - **GNOME**
 - **COSMIC**
+- **Cinnamon**
 
 ## Hardware Support (Debian-style out-of-the-box)
 
