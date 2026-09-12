@@ -1,26 +1,26 @@
 # örnek Skill
 
-**Kategori:** meta / örnek
-**Tetikleyici:** `örnek`
-**Dosya:** `.claude/SKILLS/örnek/örnek.md:1`
-**Açıklama:** Bu bir örnek skill şablonudur. Tüm skill'ler bu yapıyı takip eder.
+**Category:** meta / örnek
+**Trigger:** `örnek`
+**File:** `.claude/SKILLS/örnek/örnek.md:1`
+**Description:** This is an example skill template. All skills follow this structure.
 
-## Ne Yapar
-- Satır satır dosya analizi
-- Hata tespiti ve fix önerisi
-- `file:line` referanslı rapor
+## What It Does
+- Line-by-line file analysis
+- Error detection and fix suggestions
+- `file:line` referenced report
 
-## Fix Adımları
-1. `Read` ile dosyayı oku
-2. Sorunu tespit et
-3. `Edit` ile düzelt
-4. `Bash` ile doğrula
+## Fix Steps
+1. Read the file with `Read`
+2. Identify the issue
+3. Fix it with `Edit`
+4. Verify with `Bash`
 
-## Örnek Kullanım
+## Example Usage
 ```
-Kullanıcı: "örnek skill'i çalıştır"
-Asistan: bu dosyayı okur ve adımları uygular
+User: "run the example skill"
+Assistant: reads this file and follows the steps
 ```
 
 ---
-*Bu dosya `.claude/SKILLS/README.md:1` yapısına uygun örnek olarak oluşturuldu.*
+*This file was created as an example following the `.claude/SKILLS/README.md:1` structure.*

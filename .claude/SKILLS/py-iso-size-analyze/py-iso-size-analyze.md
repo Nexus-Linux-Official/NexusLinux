@@ -1,26 +1,26 @@
 # py-iso-size-analyze Skill
 
-**Kategori:** py
-**Tetikleyici:** `py-iso-size-analyze`
-**Dosya:** `.claude/SKILLS/py-iso-size-analyze/py-iso-size-analyze.md:1`
+**Category:** py
+**Trigger:** `py-iso-size-analyze`
+**File:** `.claude/SKILLS/py-iso-size-analyze/py-iso-size-analyze.md:1`
 
-## Açıklama
-Bu skill `py-iso-size-analyze` için satır satır debug ve fix sağlar.
+## Description
+This skill `py-iso-size-analyze` provides line-by-line debug and fix.
 
-## Hedef Dosyalar
-- İlgili `file:line` referansları bu skill'e özeldir (bkz. SKILLS listesi).
+## Target Files
+- Relevant `file:line` references are specific to this skill (see SKILLS list).
 
-## Adımlar
-1. `Read` ile hedef dosyayı oku
-2. Hata/düzenlenecek satırı tespit et
-3. `Edit` ile düzelt
-4. `Bash` ile doğrula (cargo check / shellcheck / namcap)
-5. Gerekirse `git add/commit`
+## Steps
+1. Read the target file with `Read`
+2. Identify the error/line to be edited
+3. Fix it with `Edit`
+4. Verify with `Bash` (cargo check / shellcheck / namcap)
+5. If necessary, `git add/commit`
 
-## Örnek Tetik
+## Example Trigger
 ```
-Kullanıcı: "py-iso-size-analyze"
+User: "py-iso-size-analyze"
 ```
 
 ---
-*Otomatik oluşturuldu — `README.md:1` yapısına uygun.*
+*Auto-generated — conforms to `README.md:1` structure.*

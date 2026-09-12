@@ -1,75 +1,75 @@
-# Nexus Linux — Geliştirici Çağrısı / Developer Call
+# Nexus Linux — Developer Call
 
-> **Bu proje şu an basit bir geliştirme ortamında yapılıyor.**  
-> Derleme sorunları çözülüp GitHub Actions / CI/CD kurulunca geliştirme oraya taşınacak.
+> **This project is currently being developed in a simple development environment.**  
+> Once build issues are resolved and GitHub Actions / CI/CD is set up, development will move there.
 
 ---
 
-## 🎯 Vizyon
+## 🎯 Vision
 
-**Nexus Linux** — *Web-app tabanlı, hafif, güvenlik odaklı, Pure Arch tabanlı bir dağıtım.*
+**Nexus Linux** — *Web-app based, lightweight, security-focused, Pure Arch-based distribution.*
 
-| Özellik | Plan |
+| Feature | Plan |
 |---------|------|
-| **Taban** | Pure Arch (core/extra/multilib sadece) |
-| **Masaüstü** | KDE Plasma (varsayılan), GNOME, COSMIC seçenekli |
-| **Kurulum** | Calamares (kaynak koddan derlenir) |
-| **Paket Yönetimi** | `pacman` + Flatpak (web-app'ler için) |
-| **Güvenlik** | ClamAV, hardened kernel seçenekleri, AppArmor/SELinux profilleri |
-| **Web-App Odaklı** | Flatpak/WebApp Manager entegrasyonu, PWA desteği |
-| **Hafif** | Minimal ISO ~1.5GB, sadece gerekli servisler |
+| **Base** | Pure Arch (core/extra/multilib only) |
+| **Desktop** | KDE Plasma (default), GNOME, COSMIC options |
+| **Installation** | Calamares (built from source) |
+| **Package Management** | `pacman` + Flatpak (for web-apps) |
+| **Security** | ClamAV, hardened kernel options, AppArmor/SELinux profiles |
+| **Web-App Focus** | Flatpak/WebApp Manager integration, PWA support |
+| **Lightweight** | Minimal ISO ~1.5GB, only essential services |
 
 ---
 
-## 📍 Şu Anki Durum (2026-09)
+## 📍 Current Status (2026-09)
 
-| Bileşen | Durum |
+| Component | Status |
 |---------|-------|
-| Pure Arch base | ✅ Tamamlandı |
-| CachyOS kalıntıları | ✅ Tamamen temizlendi |
-| Calamares (kaynak koddan) | 🔄 Derleme aşamasında |
-| localpkgs (branding/keyring/wallpaper/calamares-config) | ✅ Eklendi |
-| GRUB teması | ✅ Eklendi |
-| Donanım sürücüleri (firmware/GPU/WiFi/Bluetooth/Printer) | ✅ Paket listelerine eklendi |
-| ClamAV + ClamTK | ✅ Eklendi |
-| Derleme scripti | 🔄 `libjsoncpp.so.26` hatası — çözülüyor |
-| CI/CD (GitHub Actions) | ❌ Henüz yok |
+| Pure Arch base | ✅ Completed |
+| CachyOS remnants | ✅ Fully cleaned |
+| Calamares (from source) | 🔄 In build phase |
+| localpkgs (branding/keyring/wallpaper/calamares-config) | ✅ Added |
+| GRUB theme | ✅ Added |
+| Hardware drivers (firmware/GPU/WiFi/Bluetooth/Printer) | ✅ Added to package lists |
+| ClamAV + ClamTK | ✅ Added |
+| Build script | 🔄 `libjsoncpp.so.26` error — being fixed |
+| CI/CD (GitHub Actions) | ❌ Not yet |
 
-> **Not:** Şu an `build-nexus-iso.sh` scripti manuel çalıştırılıyor. Derleme hatası (`cmake: libjsoncpp.so.26`) çözülmek üzere.
+> **Note:** The `build-nexus-iso.sh` script is currently run manually. The build error (`cmake: libjsoncpp.so.26`) is being fixed.
 
 ---
 
-## 🛠 Geliştiriciysen Nasıl Yardımcı Olabilirsin?
+## 🛠 How Can You Help as a Developer?
 
-| Alan | Ne Gerekiyor |
+| Area | What's Needed |
 |------|--------------|
 | **CI/CD** | GitHub Actions workflow: `makepkg`, `mkarchiso`, artifact upload |
-| **Calamares** | Modül optimizasyonu, web-app kurulum seçeneği ekleme |
-| **Güvenlik** | AppArmor profilleri, hardened kernel paketi, sbom imzalama |
-| **Web-App** | Flatpak repo entegrasyonu, PWA installer, WebApp Manager |
-| **Branding** | Duvar kağıtları, SDDM/Plymouth temaları, ikon seti |
-| **Test** | Sanal makine / bare metal testleri, donanım uyumluluk raporları |
-| **Dokümantasyon** | Wiki, kurulum rehberi, geliştirici kılavuzu |
+| **Calamares** | Module optimization, adding web-app installation option |
+| **Security** | AppArmor profiles, hardened kernel package, sbom signing |
+| **Web-App** | Flatpak repo integration, PWA installer, WebApp Manager |
+| **Branding** | Wallpapers, SDDM/Plymouth themes, icon set |
+| **Test** | Virtual machine / bare metal tests, hardware compatibility reports |
+| **Documentation** | Wiki, installation guide, developer manual |
 
 ---
 
-## 🚀 Hızlı Başlangıç (Geliştiriciler İçin)
+## 🚀 Quick Start (For Developers)
 
 ```bash
 # Repo
 git clone https://github.com/nexuslinux-os/NexusLinux
 cd NexusLinux
 
-# Bağımlılıklar (Arch/Arch-based)
+# Dependencies (Arch/Arch-based)
 sudo pacman -S archiso base-devel git cmake qt6-base qt6-declarative \
     kconfig kcoreaddons ki18n kparts yaml-cpp jsoncpp
 
-# Local paketleri derle
+# Build local packages
 for p in localpkgs/*/; do
     (cd "$p" && makepkg -sf --noconfirm --skippgpcheck)
 done
 
-# Calamares derle (tek seferlik)
+# Build Calamares (one-time)
 git clone --depth 1 --branch v3.3.12 https://github.com/calamares/calamares
 cd calamares && mkdir build && cd build
 cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DINSTALL_CONFIG=ON
@@ -81,50 +81,50 @@ make -j$(nproc) && sudo make install
 
 ---
 
-## 📁 Yapı
+## 📁 Structure
 
 ```
 NexusLinux/
-├── archiso/                 # archiso profili (airootfs, packages, grub, syslinux)
-│   ├── airootfs/            # Live sistem overlay
+├── archiso/                 # archiso profile (airootfs, packages, grub, syslinux)
+│   ├── airootfs/            # Live system overlay
 │   │   ├── etc/             # os-release, pacman.conf, calamares modules
 │   │   ├── usr/share/nexus-calamares/  # Branding, modules, scripts
-│   │   └── boot/grub/themes/nexus/     # GRUB teması
-│   ├── packages*.x86_64     # Paket listeleri (x86_64, desktop, minimal)
+│   │   └── boot/grub/themes/nexus/     # GRUB theme
+│   ├── packages*.x86_64     # Package lists (x86_64, desktop, minimal)
 │   └── buildiso.sh          # Upstream archiso build driver
-├── localpkgs/               # Nexus özel paketler (makepkg)
+├── localpkgs/               # Nexus custom packages (makepkg)
 │   ├── nexus-branding/      # os-release, lsb-release
-│   ├── nexus-wallpapers/    # Duvar kağıtları
-│   ├── nexus-keyring/       # İmzalama anahtarları
-│   └── nexus-calamares/     # Calamares modülleri, branding, config
-├── build-nexus-iso.sh       # Ana build scripti
-├── build-nexus-repo.sh      # (Eski — local repo için, kullanılmıyor)
-├── CHANGELOG.md             # Değişiklik günlüğü
-├── README.md                # Proje tanımı
-├── CONTRIBUTING.md          # Katkı rehberi
-└── SECURITY.md              # Güvenlik politikası
+│   ├── nexus-wallpapers/    # Wallpapers
+│   ├── nexus-keyring/       # Signing keys
+│   └── nexus-calamares/     # Calamares modules, branding, config
+├── build-nexus-iso.sh       # Main build script
+├── build-nexus-repo.sh      # (Legacy — for local repo, not used)
+├── CHANGELOG.md             # Changelog
+├── README.md                # Project description
+├── CONTRIBUTING.md          # Contribution guide
+└── SECURITY.md              # Security policy
 ```
 
 ---
 
-## 💬 İletişim
+## 💬 Contact
 
 - **Issues:** [GitHub Issues](https://github.com/nexuslinux-os/NexusLinux/issues)
 - **Discussions:** [GitHub Discussions](https://github.com/nexuslinux-os/NexusLinux/discussions)
 - **Email:** `nexuslinux@proton.me`
-- **Social Networks:** Henüz yok
+- **Social Networks:** Not yet
 
 ---
 
-## ⚖️ Lisans
+## ⚖️ License
 
-- **Kod:** GPL-3.0-or-later
-- **Branding/Varlıklar:** CC-BY-SA-4.0
-- **Pure Arch tabanlı** — Arch Linux paketleri kendi lisanslarıyla gelir.
+- **Code:** GPL-3.0-or-later
+- **Branding/Assets:** CC-BY-SA-4.0
+- **Pure Arch based** — Arch Linux packages come with their own licenses.
 
 ---
 
-> **"Basit başla, güvenli büyüt, web'e odaklan."**  
+> **"Start simple, grow securely, focus on the web."**  
 > Nexus Linux — Pure Arch. Web-first. Security-by-default.
 
-> **Katkı sağlamak istersen:** Fork → Branch → PR. Her katkı değerlidir.
+> **Want to contribute:** Fork → Branch → PR. Every contribution is valuable.

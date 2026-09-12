@@ -1,8 +1,8 @@
 # Nexus Live SKILLS Directory
 
-Bu dizin Muse / Codex için 210+ skill içerir. Her skill kendi klasöründe `<skill-adı>/<skill-adı>.md` olarak tanımlıdır.
+This directory contains 210+ skills for Muse / Codex. Each skill is defined in its own folder as `<skill-name>/<skill-name>.md`.
 
-## Yapı
+## Structure
 ```
 .claude/SKILLS/
 ├── README.md
@@ -12,7 +12,7 @@ Bu dizin Muse / Codex için 210+ skill içerir. Her skill kendi klasöründe `<s
 └── meta-issue-txt-tracker/meta-issue-txt-tracker.md
 ```
 
-## Kategoriler (10)
+## Categories (10)
 1. **ARCHISO & ISO BUILD** (30) — `archiso/*`
 2. **CALAMARES** (25) — `calamares/*`
 3. **RUST WORKSPACE** (30) — `rust/*`
@@ -24,13 +24,13 @@ Bu dizin Muse / Codex için 210+ skill içerir. Her skill kendi klasöründe `<s
 9. **PYTHON** (15) — `py/*`
 10. **META & DOC** (10) — `meta/*`
 
-## Kullanım
-- Tetikleyici: `archiso-profile-validate` dendiğinde `archiso/profiledef.sh:1-39` satır satır kontrol edilir.
-- Her `.md` dosyası: açıklama, tetikleyici, dosya:line referansları, fix adımları içerir.
-- Örnek: `.claude/SKILLS/örnek/örnek.md` şablonu aşağıdadır.
+## Usage
+- Trigger: when `archiso-profile-validate` is invoked, `archiso/profiledef.sh:1-39` is checked line by line.
+- Each `.md` file contains: description, trigger, file:line references, fix steps.
+- Example: template at `.claude/SKILLS/example/example.md` below.
 
-## Örnek Skill Şablonu
-Bkz: `örnek/örnek.md`
+## Example Skill Template
+See: `example/example.md`
 
-## Toplam
-210 skill — yüzlerce olarak tanımlı, her biri izole `.md` dosyası.
+## Total
+210 skills — defined as hundreds, each as an isolated `.md` file.

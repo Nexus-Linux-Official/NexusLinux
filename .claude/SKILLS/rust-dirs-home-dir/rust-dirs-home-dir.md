@@ -1,26 +1,26 @@
 # rust-dirs-home-dir Skill
 
-**Kategori:** rust
-**Tetikleyici:** `rust-dirs-home-dir`
-**Dosya:** `.claude/SKILLS/rust-dirs-home-dir/rust-dirs-home-dir.md:1`
+**Category:** rust
+**Trigger:** `rust-dirs-home-dir`
+**File:** `.claude/SKILLS/rust-dirs-home-dir/rust-dirs-home-dir.md:1`
 
-## Açıklama
-Bu skill `rust-dirs-home-dir` için satır satır debug ve fix sağlar.
+## Description
+This skill `rust-dirs-home-dir` provides line-by-line debug and fix.
 
-## Hedef Dosyalar
-- İlgili `file:line` referansları bu skill'e özeldir (bkz. SKILLS listesi).
+## Target Files
+- Relevant `file:line` references are specific to this skill (see SKILLS list).
 
-## Adımlar
-1. `Read` ile hedef dosyayı oku
-2. Hata/düzenlenecek satırı tespit et
-3. `Edit` ile düzelt
-4. `Bash` ile doğrula (cargo check / shellcheck / namcap)
-5. Gerekirse `git add/commit`
+## Steps
+1. Read the target file with `Read`
+2. Identify the error/line to be edited
+3. Fix it with `Edit`
+4. Verify with `Bash` (cargo check / shellcheck / namcap)
+5. If necessary, `git add/commit`
 
-## Örnek Tetik
+## Example Trigger
 ```
-Kullanıcı: "rust-dirs-home-dir"
+User: "rust-dirs-home-dir"
 ```
 
 ---
-*Otomatik oluşturuldu — `README.md:1` yapısına uygun.*
+*Auto-generated — conforms to `README.md:1` structure.*

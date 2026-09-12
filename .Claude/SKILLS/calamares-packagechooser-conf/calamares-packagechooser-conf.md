@@ -1,26 +1,26 @@
 # calamares-packagechooser-conf Skill
 
-**Kategori:** calamares
-**Tetikleyici:** `calamares-packagechooser-conf`
-**Dosya:** `.claude/SKILLS/calamares-packagechooser-conf/calamares-packagechooser-conf.md:1`
+**Category:** calamares
+**Trigger:** `calamares-packagechooser-conf`
+**File:** `.claude/SKILLS/calamares-packagechooser-conf/calamares-packagechooser-conf.md:1`
 
-## Açıklama
-Bu skill `calamares-packagechooser-conf` için satır satır debug ve fix sağlar.
+## Description
+This skill `calamares-packagechooser-conf` provides line-by-line debug and fix.
 
-## Hedef Dosyalar
-- İlgili `file:line` referansları bu skill'e özeldir (bkz. SKILLS listesi).
+## Target Files
+- Relevant `file:line` references are specific to this skill (see SKILLS list).
 
-## Adımlar
-1. `Read` ile hedef dosyayı oku
-2. Hata/düzenlenecek satırı tespit et
-3. `Edit` ile düzelt
-4. `Bash` ile doğrula (cargo check / shellcheck / namcap)
-5. Gerekirse `git add/commit`
+## Steps
+1. Read the target file with `Read`
+2. Identify the error/line to be edited
+3. Fix it with `Edit`
+4. Verify with `Bash` (cargo check / shellcheck / namcap)
+5. If necessary, `git add/commit`
 
-## Örnek Tetik
+## Example Trigger
 ```
-Kullanıcı: "calamares-packagechooser-conf"
+User: "calamares-packagechooser-conf"
 ```
 
 ---
-*Otomatik oluşturuldu — `README.md:1` yapısına uygun.*
+*Auto-generated — conforms to `README.md:1` structure.*
