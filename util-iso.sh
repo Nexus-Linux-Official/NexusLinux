@@ -171,6 +171,10 @@ run_build() {
     msg2 "Copying the Archiso folder to build work"
     mkdir -p ${work_dir}
     cp -r archiso ${work_dir}/archiso
+    # If NEXUS_TMP_PACMAN_CONF is set (from build-nexus-iso.sh), use it for the build (avoids dirty working tree)
+    if [ -n "${NEXUS_TMP_PACMAN_CONF:-}" ] && [ -f "${NEXUS_TMP_PACMAN_CONF}" ]; then
+        cp -f "${NEXUS_TMP_PACMAN_CONF}" "${work_dir}/archiso/pacman.conf"
+    fi
 
     msg "Start [Build ISO]"
 

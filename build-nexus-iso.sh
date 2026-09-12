@@ -17,7 +17,7 @@ CALAMARES_VERSION="3.3.12"
 CALAMARES_PKGBUILD_DIR="$ROOT/.calamares-pkgbuild"
 
 for dep in mkarchiso repo-add makepkg; do
-    command -v "$dep" >/dev/null 2>&1 || { echo "HATA: eksik bağımlılık: $dep" >&2; exit 1; }
+    command -v "$dep" >/dev/null 2>&1 || { echo "ERROR: missing dependency: $dep" >&2; exit 1; }
 done
 
 # Install build dependencies FIRST (including Calamares build deps + pacman-contrib for repo-add)
@@ -37,15 +37,25 @@ sudo pacman -S --needed --noconfirm \
 sudo pacman -S --needed --noconfirm --overwrite /usr/lib/libjsoncpp.so.26 cmake
 sudo ldconfig
 
-command -v makepkg >/dev/null 2>&1 || { echo "HATA: makepkg not found after base-devel install" >&2; exit 1; }
+command -v makepkg >/dev/null 2>&1 || { echo "ERROR: makepkg not found after base-devel install" >&2; exit 1; }
 
 # Prepare a clean local pacman repo directory.
 # mkarchiso cannot "see" packages that only sit in /var/cache/pacman/pkg or on
 # the host filesystem - it needs a real repo database (repo-add) that
 # pacman.conf points to, containing ACTUAL .pkg.tar.zst files.
+# Check for existing Calamares package BEFORE cleaning (avoid dead code).
+CALAMARES_EXISTS=false
+if ls "$LOCALREPO"/calamares-*.pkg.tar.zst >/dev/null 2>&1; then
+    CALAMARES_EXISTS=true
+fi
 echo "==> Preparing local pacman repo at $LOCALREPO"
 rm -rf "$LOCALREPO"
 mkdir -p "$LOCALREPO"
+# Restore Calamares if it existed (avoid rebuilding)
+if [ "$CALAMARES_EXISTS" = true ] && ls "$CALAMARES_PKGBUILD_DIR"/calamares-*.pkg.tar.zst >/dev/null 2>&1; then
+    cp -f "$CALAMARES_PKGBUILD_DIR"/calamares-*.pkg.tar.zst "$LOCALREPO/"
+    echo "==> Calamares package restored from previous build"
+fi
 
 # ---------------------------------------------------------------------------
 # Build Calamares AS A PACKAGE (not "sudo make install" onto the host).
@@ -69,9 +79,9 @@ license=('GPL3')
 depends=('qt6-base' 'qt6-declarative' 'qt6-svg' 'kconfig' 'kcoreaddons' 'kcrash'
          'ki18n' 'kparts' 'kpmcore' 'kservice' 'kwidgetsaddons' 'libpwquality'
          'polkit-qt6' 'yaml-cpp' 'boost-libs' 'python')
-makedepends=('git' 'cmake' 'extra-cmake-modules' 'qt6-tools' 'boost' 'jsoncpp')
-source=("git+https://github.com/calamares/calamares.git#tag=v\${pkgver}")
-sha256sums=('SKIP')
+makedepends=('cmake' 'extra-cmake-modules' 'qt6-tools' 'boost' 'jsoncpp')
+source=("https://codeberg.org/Calamares/calamares/archive/v\${pkgver}.tar.gz")
+sha256sums=('c7e635a2a0bed0078a50b8deea310eb2c09bf9d807bbeb4c8bcda4f85771fc7c')
 
 
 build() {
@@ -94,12 +104,12 @@ package() {
   make DESTDIR="\$pkgdir" install
 }
 EOF
-    ( cd "$CALAMARES_PKGBUILD_DIR" && makepkg -sf --noconfirm --skippgpcheck )
+    ( cd "$CALAMARES_PKGBUILD_DIR" && makepkg -sf --noconfirm )
     cp -f "$CALAMARES_PKGBUILD_DIR"/calamares-*.pkg.tar.zst "$LOCALREPO/"
 }
 
-if ls "$LOCALREPO"/calamares-*.pkg.tar.zst >/dev/null 2>&1; then
-    echo "==> [2/4] Calamares paketi zaten localrepo'da, atlanıyor"
+if [ "$CALAMARES_EXISTS" = true ]; then
+    echo "==> [2/4] Calamares package already in localrepo (restored), skipping rebuild"
 else
     build_calamares_package
 fi
@@ -109,7 +119,7 @@ echo "==> [3/4] Building local Nexus packages"
 for pkg in nexus-branding nexus-wallpapers nexus-keyring nexus-calamares; do
     if [ -d "$ROOT/localpkgs/$pkg" ]; then
         echo "  building $pkg"
-        ( cd "$ROOT/localpkgs/$pkg" && makepkg -sf --noconfirm --skippgpcheck )
+        ( cd "$ROOT/localpkgs/$pkg" && makepkg -sf --noconfirm )
         cp -f "$ROOT/localpkgs/$pkg"/*.pkg.tar.zst "$LOCALREPO/"
     fi
 done
@@ -118,26 +128,24 @@ done
 echo "==> Building local repo database ($LOCALREPO_NAME.db.tar.gz)"
 ( cd "$LOCALREPO" && repo-add --new "$LOCALREPO_NAME.db.tar.gz" ./*.pkg.tar.zst )
 
-# Make sure archiso/pacman.conf actually references our local repo.
-# Insert it at the TOP so it's checked before core/extra/multilib.
-PACMAN_CONF="$ROOT/archiso/pacman.conf"
-if [ -f "$PACMAN_CONF" ] && ! grep -q "^\[$LOCALREPO_NAME\]" "$PACMAN_CONF"; then
-    echo "==> Registering [$LOCALREPO_NAME] repo in $PACMAN_CONF"
-    TMP_CONF="$(mktemp)"
-    {
-        echo "[$LOCALREPO_NAME]"
-        echo "SigLevel = Optional TrustAll"
-        echo "Server = file://$LOCALREPO"
-        echo
-        cat "$PACMAN_CONF"
-    } > "$TMP_CONF"
-    mv "$TMP_CONF" "$PACMAN_CONF"
-elif [ ! -f "$PACMAN_CONF" ]; then
-    echo "HATA: $PACMAN_CONF bulunamadı, [nexus] reposu eklenemedi." >&2
+# Prepare a temp pacman.conf with [nexus] repo for the build.
+# The committed archiso/pacman.conf intentionally has NO [nexus] section (see comment at EOF).
+# We generate a temp file and let util-iso.sh copy it to work_dir, avoiding dirty working tree.
+PACMAN_CONF_SRC="$ROOT/archiso/pacman.conf"
+if [ ! -f "$PACMAN_CONF_SRC" ]; then
+    echo "ERROR: $PACMAN_CONF_SRC not found, cannot create [nexus] repo config." >&2
     exit 1
-else
-    echo "==> [$LOCALREPO_NAME] repo zaten pacman.conf içinde, atlanıyor"
 fi
+TMP_PACMAN_CONF="$(mktemp)"
+{
+    echo "[$LOCALREPO_NAME]"
+    echo "SigLevel = Optional TrustAll"
+    echo "Server = file://$LOCALREPO"
+    echo
+    cat "$PACMAN_CONF_SRC"
+} > "$TMP_PACMAN_CONF"
+export NEXUS_TMP_PACMAN_CONF="$TMP_PACMAN_CONF"
+echo "==> Prepared temp pacman.conf with [$LOCALREPO_NAME] repo at $TMP_PACMAN_CONF"
 
 echo "==> [4/4] Building ISO (profile: $PROFILE)"
 
@@ -158,17 +166,64 @@ ISO_PATH="$(find "$ROOT/out/$PROFILE" -maxdepth 1 -name '*.iso' -print -quit 2>/
 if [ -n "$ISO_PATH" ]; then
     ( cd "$(dirname "$ISO_PATH")" && sha256sum "$(basename "$ISO_PATH")" > SHA256SUMS )
     cp -f "$ISO_PATH" "${ISO_PATH%.iso}.img"
-    {
-        grep -rh '^\s*-\s*[a-z0-9@._+-]' "$ROOT/archiso/airootfs/usr/share/nexus-calamares/modules/netinstall.yaml" | sed 's/^\s*-\s*//'
-        cat "$ROOT/archiso/packages.x86_64" 2>/dev/null || true
-    } | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | grep -v '^$' | sort -u > "$ROOT/out/$PROFILE/pkgs.txt"
+    # Robust pkgs.txt generation: use Python YAML parser if available, fallback to grep
+    if command -v python3 >/dev/null 2>&1 && python3 -c "import yaml" 2>/dev/null; then
+        python3 << 'PY' > "$ROOT/out/$PROFILE/pkgs.txt"
+import yaml, pathlib, re
+pkgs = set()
+# Parse netinstall.yaml properly
+try:
+    data = yaml.safe_load(open(f"{pathlib.Path.cwd()}/archiso/airootfs/usr/share/nexus-calamares/modules/netinstall.yaml"))
+    def collect(obj):
+        if isinstance(obj, dict):
+            for k, v in obj.items():
+                if k == "packages" and isinstance(v, list):
+                    for p in v:
+                        if isinstance(p, str):
+                            pkgs.add(p.strip())
+                else:
+                    collect(v)
+        elif isinstance(obj, list):
+            for item in obj:
+                collect(item)
+    collect(data)
+except Exception as e:
+    # Fallback to grep if YAML parsing fails
+    import subprocess, shlex
+    try:
+        out = subprocess.check_output(["grep", "-rh", r"^\s*-\s*[a-z0-9@._+-]", "archiso/airootfs/usr/share/nexus-calamares/modules/netinstall.yaml"], text=True)
+        for line in out.splitlines():
+            m = re.match(r"^\s*-\s*([a-z0-9@._+-]+)", line)
+            if m:
+                pkgs.add(m.group(1))
+    except:
+        pass
+# Add base packages
+try:
+    for line in open("archiso/packages.x86_64"):
+        line=line.strip()
+        if line and not line.startswith("#"):
+            pkgs.add(line)
+except:
+    pass
+for p in sorted(pkgs):
+    print(p)
+PY
+    else
+        # Fallback: legacy grep method
+        {
+            grep -rh '^\s*-\s*[a-z0-9@._+-]' "$ROOT/archiso/airootfs/usr/share/nexus-calamares/modules/netinstall.yaml" | sed 's/^\s*-\s*//'
+            cat "$ROOT/archiso/packages.x86_64" 2>/dev/null || true
+        } | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | grep -v '^$' | sort -u > "$ROOT/out/$PROFILE/pkgs.txt"
+    fi
     echo "    - ISO:        $ISO_PATH"
     echo "    - SHA256:     $ROOT/out/$PROFILE/SHA256SUMS"
     echo "    - USB image:  ${ISO_PATH%.iso}.img (dd to USB)"
     echo "    - Package list: $ROOT/out/$PROFILE/pkgs.txt"
+    echo "==> Done."
+    echo "    Build log:  $ROOT/build.log"
 else
-    echo "    ERROR: out/$PROFILE/*.iso not found (build may have failed)"
+    echo "    ERROR: out/$PROFILE/*.iso not found (build may have failed)" >&2
+    echo "    Build log:  $ROOT/build.log" >&2
+    exit 1
 fi
-
-echo "==> Done."
-echo "    Build log:  $ROOT/build.log"

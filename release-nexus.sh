@@ -24,13 +24,13 @@ export GPGKEY="${NEXUS_GPGKEY:-F4C57604C90E90CD6AB3633F2AA4846E14CBE512}"
 export GNUPGHOME="${NEXUS_GNUPGHOME:-$ROOT/localpkgs/nexus-keyring/gnupg}"
 
 for dep in gh gpg repo-add; do
-    command -v "$dep" >/dev/null 2>&1 || { echo "HATA: eksik bağımlılık: $dep" >&2; exit 1; }
+    command -v "$dep" >/dev/null 2>&1 || { echo "ERROR: missing dependency: $dep" >&2; exit 1; }
 done
 
 # Validate the Nexus master key is usable for signing (non-interactive).
 if ! gpg --batch --no-tty --list-keys "$GPGKEY" >/dev/null 2>&1; then
-    echo "HATA: Nexus master key ($GPGKEY) $GNUPGHOME icinde bulunamadi" >&2
-    echo "      Anahtar geri yuklenmemis olabilir (bkz. localpkgs/nexus-keyring)." >&2
+    echo "ERROR: Nexus master key ($GPGKEY) not found in $GNUPGHOME" >&2
+    echo "      Key may not have been restored (see localpkgs/nexus-keyring)." >&2
     exit 1
 fi
 
@@ -46,8 +46,8 @@ new_tag() {
 }
 
 publish_repo() {
-    echo "==> Repo yayinlanmasi: $GIT_REPO"
-    [ -f "$REPO/nexus.db.tar.zst" ] || { echo "HATA: $REPO/nexus.db.tar.zst yok. Once ./build-nexus-repo.sh calistirin." >&2; exit 1; }
+    echo "==> Publishing repo: $GIT_REPO"
+    [ -f "$REPO/nexus.db.tar.zst" ] || { echo "ERROR: $REPO/nexus.db.tar.zst not found. Run ./build-nexus-repo.sh first." >&2; exit 1; }
 
     local work
     work="$(mktemp -d)"
@@ -57,10 +57,10 @@ publish_repo() {
     # publish real copies under the exact names pacman will request.
     for name in nexus.db nexus.db.sig nexus.files nexus.files.sig; do
         case "$name" in
-            nexus.db)      [ -e "$REPO/nexus.db.tar.zst" ] && cp -f "$REPO/nexus.db.tar.zst"     "$work/nexus.db" ;;
-            nexus.db.sig)  [ -e "$REPO/nexus.db.tar.zst.sig" ] && cp -f "$REPO/nexus.db.tar.zst.sig" "$work/nexus.db.sig" ;;
-            nexus.files)   [ -e "$REPO/nexus.files.tar.zst" ] && cp -f "$REPO/nexus.files.tar.zst"   "$work/nexus.files" ;;
-            nexus.files.sig) [ -e "$REPO/nexus.files.tar.zst.sig" ] && cp -f "$REPO/nexus.files.tar.zst.sig" "$work/nexus.files.sig" ;;
+            nexus.db)      [ -e "$REPO/nexus.db.tar.zst" ] && cp -f "$REPO/nexus.db.tar.zst"     "$work/nexus.db" || { echo "ERROR: $REPO/nexus.db.tar.zst missing" >&2; exit 1; } ;;
+            nexus.db.sig)  if [ -e "$REPO/nexus.db.tar.zst.sig" ]; then cp -f "$REPO/nexus.db.tar.zst.sig" "$work/nexus.db.sig"; else echo "WARNING: $REPO/nexus.db.tar.zst.sig missing - repo will be unsigned (SigLevel=Required will fail)" >&2; fi ;;
+            nexus.files)   [ -e "$REPO/nexus.files.tar.zst" ] && cp -f "$REPO/nexus.files.tar.zst"   "$work/nexus.files" || { echo "ERROR: $REPO/nexus.files.tar.zst missing" >&2; exit 1; } ;;
+            nexus.files.sig) if [ -e "$REPO/nexus.files.tar.zst.sig" ]; then cp -f "$REPO/nexus.files.tar.zst.sig" "$work/nexus.files.sig"; else echo "WARNING: $REPO/nexus.files.tar.zst.sig missing - repo will be unsigned" >&2; fi ;;
         esac
     done
 
@@ -70,20 +70,28 @@ publish_repo() {
 
 [nexus] repo icin:  Server = https://github.com/$GIT_REPO/releases/latest/download/
 Guncelleme:         sudo pacman -Syu"
-    echo "==> Yeni release: $tag"
+    echo "==> New release: $tag"
+    shopt -s nullglob
+    pkg_files=("$REPO"/*.pkg.tar.zst)
+    sig_files=("$REPO"/*.pkg.tar.zst.sig)
+    if [ ${#pkg_files[@]} -eq 0 ]; then
+        echo "ERROR: No packages found in $REPO" >&2
+        exit 1
+    fi
     gh release create "$tag" \
         --repo "$GIT_REPO" \
         --title "Nexus repository $tag" \
         --notes "$notes" \
         "$work/nexus.db" "$work/nexus.db.sig" "$work/nexus.files" "$work/nexus.files.sig" \
-        "$REPO"/*.pkg.tar.zst "$REPO"/*.pkg.tar.zst.sig
-    echo "==> Bitti: https://github.com/$GIT_REPO/releases/tag/$tag"
-    echo "    Sonraki: ./release-nexus.sh iso out/<profil>/<isim>.iso"
+        "${pkg_files[@]}" "${sig_files[@]}"
+    shopt -u nullglob
+    echo "==> Done: https://github.com/$GIT_REPO/releases/tag/$tag"
+    echo "    Next: ./release-nexus.sh iso out/<profile>/<name>.iso"
 }
 
 publish_iso() {
     local iso="$1"
-    [ -f "$iso" ] || { echo "HATA: ISO bulunamadi: $iso" >&2; exit 1; }
+    [ -f "$iso" ] || { echo "ERROR: ISO not found: $iso" >&2; exit 1; }
 
     local work
     work="$(mktemp -d)"
@@ -124,6 +132,6 @@ publish_iso() {
 
 case "${1:-}" in
     repo) publish_repo ;;
-    iso)  [ $# -ge 2 ] || { echo "Kullanim: $0 iso <dosya.iso>" >&2; exit 1; }; publish_iso "$2" ;;
-    *) echo "Kullanim: $0 {repo|iso <dosya.iso>}" >&2; exit 1 ;;
+    iso)  [ $# -ge 2 ] || { echo "Usage: $0 iso <file.iso>" >&2; exit 1; }; publish_iso "$2" ;;
+    *) echo "Usage: $0 {repo|iso <file.iso>}" >&2; exit 1 ;;
 esac
