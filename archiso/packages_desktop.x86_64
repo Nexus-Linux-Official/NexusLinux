@@ -27,11 +27,9 @@ nexus-kde-settings
 nexus-rust-tools
 clamav
 clamtk
-clonezilla
 cloud-init
 cryptsetup
 darkhttpd
-ddrescue
 dhcpcd
 diffutils
 dmidecode
@@ -49,7 +47,6 @@ f2fs-tools
 fakeroot
 fatresize
 firefox
-gpart
 gparted
 gptfdisk
 grub
@@ -61,7 +58,6 @@ imwheel
 inetutils
 intel-ucode
 inxi
-irssi
 iw
 iwd
 inotify-tools
@@ -72,12 +68,10 @@ kde-gtk-config
 kinfocenter
 ptyxis
 konsole
-xterm
 kpackage
 kscreen
 ldns
 less
-lftp
 libfido2
 libusb-compat
 libwnck3
@@ -118,7 +112,6 @@ lsb-release
 lsof
 lsscsi
 lvm2
-lynx
 mc
 memtest86+
 memtest86+-efi
@@ -137,7 +130,6 @@ net-tools
 networkmanager
 nfs-utils
 nilfs-utils
-nmap
 noto-fonts
 nss-mdns
 ntfs-3g
@@ -145,17 +137,13 @@ ntp
 nvidia-utils
 nvme-cli
 open-iscsi
-open-vm-tools
 opendesktop-fonts
 openssh
 openvpn
 orca
 os-prober
-partclone
 parted
-partimage
 partitionmanager
-pcsclite
 pipewire
 pipewire-alsa
 pipewire-jack
@@ -170,7 +158,6 @@ polkit
 polkit-kde-agent
 power-profiles-daemon
 pv
-qemu-guest-agent
 realtime-privileges
 refind
 rp-pppoe
@@ -184,13 +171,11 @@ smartmontools
 smbclient
 sof-firmware
 spectacle
-spice-vdagent
 squashfs-tools
 sudo
 syslinux
 systemd-resolvconf
 tcpdump
-testdisk
 tpm2-tss
 traceroute
 ttf-bitstream-vera
@@ -201,7 +186,6 @@ udftools
 usb_modeswitch
 usbmuxd
 usbutils
-virtualbox-guest-utils
 vpnc
 vulkan-virtio
 wget
