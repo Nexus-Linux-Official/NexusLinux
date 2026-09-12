@@ -34,6 +34,4 @@ file_permissions=(
   ["/usr/local/bin/pkexec-wrapper"]="0:0:755"
   ["/usr/share/nexus-calamares/write-os-release.sh"]="0:0:755"
   ["/root/customize_airootfs.sh"]="0:0:755"
-  ["/etc/xdg/autostart/calamares.desktop"]="0:0:644"
-  ["/etc/skel/.config/autostart/calamares.desktop"]="0:0:644"
 )
