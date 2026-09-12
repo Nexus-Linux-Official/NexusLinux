@@ -11,12 +11,18 @@ bind
 bluedevil
 bolt
 breeze-gtk
+breeze-icons
+hicolor-icon-theme
+papirus-icon-theme
+adwaita-icon-theme
+oxygen-icons
 brltty
 btrfs-progs
 nexus-branding
 nexus-wallpapers
 nexus-keyring
 nexus-calamares
+calamares
 nexus-kde-settings
 nexus-rust-tools
 clamav
@@ -65,6 +71,8 @@ kcalc
 kde-gtk-config
 kinfocenter
 ptyxis
+konsole
+xterm
 kpackage
 kscreen
 ldns
@@ -158,9 +166,6 @@ plasma-nm
 plasma-pa
 plasma-thunderbolt
 plasma-workspace
-kde-applications
-gnome
-gnome-extra
 polkit
 polkit-kde-agent
 power-profiles-daemon
