@@ -62,16 +62,22 @@ fn set_wallpaper(path: &PathBuf, monitor: Option<String>) -> Result<()> {
         anyhow::bail!("Wallpaper file not found: {}", path.display());
     }
 
-    // For KDE Plasma
-    let dbus_cmd = if let Some(m) = monitor {
-        format!("dbus-send --session --dest=org.kde.plasmashell --type=method_call /PlasmaShell org.kde.PlasmaShell.evaluateScript 'string:var wallpaper = \"{}\"; var monitors = [\"{}\"];', dest=org.kde.plasmashell", path.display(), m)
+    // For KDE Plasma - use direct dbus-send invocation to avoid shell injection
+    let script = if let Some(m) = monitor {
+        format!("var wallpaper = \"{}\"; var monitors = [\"{}\"];", path.display(), m)
     } else {
-        format!("dbus-send --session --dest=org.kde.plasmashell --type=method_call /PlasmaShell org.kde.PlasmaShell.evaluateScript 'string:var wallpaper = \"{}\";', dest=org.kde.plasmashell", path.display())
+        format!("var wallpaper = \"{}\";", path.display())
     };
 
-    std::process::Command::new("sh")
-        .arg("-c")
-        .arg(&dbus_cmd)
+    std::process::Command::new("dbus-send")
+        .args([
+            "--session",
+            "--dest=org.kde.plasmashell",
+            "--type=method_call",
+            "/PlasmaShell",
+            "org.kde.PlasmaShell.evaluateScript",
+            &format!("string:{}", script),
+        ])
         .status()?;
 
     println!("Wallpaper set to: {}", path.display());
@@ -79,6 +85,9 @@ fn set_wallpaper(path: &PathBuf, monitor: Option<String>) -> Result<()> {
 }
 
 fn generate_wallpaper(output: &PathBuf, width: u32, height: u32) -> Result<()> {
+    if width == 0 || height == 0 {
+        anyhow::bail!("width and height must be non-zero");
+    }
     let mut img = RgbImage::new(width, height);
 
     // Create gradient background

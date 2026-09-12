@@ -16,8 +16,40 @@ source=(branding.desc
         kwinrc
         plasmarc
         plasma-org.kde.plasma.desktop-appletsrc
-        metadata.json)
+        metadata.json
+        colors/BreezeDark.colors
+        colors/BreezeLight.colors
+        colors/BreezeTwilight.colors
+        fonts/fonts.json
+        icons/icons.json
+        plasma/desktoptheme.json
+        splash/Splash.qml
+        look-and-feel/nexus/metadata.json
+        look-and-feel/nexus/contents/colors/BreezeDark.colors
+        look-and-feel/nexus/contents/colors/BreezeLight.colors
+        look-and-feel/nexus/contents/colors/BreezeTwilight.colors
+        look-and-feel/nexus/contents/defaults
+        look-and-feel/nexus/contents/fonts/fonts.json
+        look-and-feel/nexus/contents/icons/icons.json
+        look-and-feel/nexus/contents/plasma/desktoptheme.json
+        look-and-feel/nexus/contents/splash/Splash.qml)
 sha256sums=('SKIP'
+           'SKIP'
+           'SKIP'
+           'SKIP'
+           'SKIP'
+           'SKIP'
+           'SKIP'
+           'SKIP'
+           'SKIP'
+           'SKIP'
+           'SKIP'
+           'SKIP'
+           'SKIP'
+           'SKIP'
+           'SKIP'
+           'SKIP'
+           'SKIP'
            'SKIP'
            'SKIP'
            'SKIP'
@@ -31,26 +63,22 @@ sha256sums=('SKIP'
 prepare() {
     # Copy all source files from startdir to srcdir
     # This ensures all files are available in the build directory
-    cp -r "$startdir/colors" "$srcdir/" 2>/dev/null || true
-    cp -r "$startdir/fonts" "$srcdir/" 2>/dev/null || true
-    cp -r "$startdir/icons" "$srcdir/" 2>/dev/null || true
-    cp -r "$startdir/plasma" "$srcdir/" 2>/dev/null || true
-    cp -r "$startdir/splash" "$srcdir/" 2>/dev/null || true
-    cp -r "$startdir/look-and-feel" "$srcdir/" 2>/dev/null || true
-    cp -f "$startdir/branding.desc" "$srcdir/" 2>/dev/null || true
-    cp -f "$startdir/write-os-release.sh" "$srcdir/" 2>/dev/null || true
-    cp -f "$startdir/shellprocess.conf" "$srcdir/" 2>/dev/null || true
-    cp -f "$startdir/netinstall.yaml" "$srcdir/" 2>/dev/null || true
-    cp -f "$startdir/settings_offline.conf" "$srcdir/" 2>/dev/null || true
-    cp -f "$startdir/kdeglobals" "$srcdir/" 2>/dev/null || true
-    cp -f "$startdir/kwinrc" "$srcdir/" 2>/dev/null || true
-    cp -f "$startdir/plasmarc" "$srcdir/" 2>/dev/null || true
-    cp -f "$startdir/plasma-org.kde.plasma.desktop-appletsrc" "$srcdir/" 2>/dev/null || true
-    cp -f "$startdir/metadata.json" "$srcdir/" 2>/dev/null || true
-    cp -f "$startdir/write-os-release.sh" "$srcdir/" 2>/dev/null || true
-    cp -f "$startdir/shellprocess.conf" "$srcdir/" 2>/dev/null || true
-    cp -f "$startdir/netinstall.yaml" "$srcdir/" 2>/dev/null || true
-    cp -f "$startdir/settings_offline.conf" "$srcdir/" 2>/dev/null || true
+    cp -r "$startdir/colors" "$srcdir/"
+    cp -r "$startdir/fonts" "$srcdir/"
+    cp -r "$startdir/icons" "$srcdir/"
+    cp -r "$startdir/plasma" "$srcdir/"
+    cp -r "$startdir/splash" "$srcdir/"
+    cp -r "$startdir/look-and-feel" "$srcdir/"
+    cp -f "$startdir/branding.desc" "$srcdir/"
+    cp -f "$startdir/write-os-release.sh" "$srcdir/"
+    cp -f "$startdir/shellprocess.conf" "$srcdir/"
+    cp -f "$startdir/netinstall.yaml" "$srcdir/"
+    cp -f "$startdir/settings_offline.conf" "$srcdir/"
+    cp -f "$startdir/kdeglobals" "$srcdir/"
+    cp -f "$startdir/kwinrc" "$srcdir/"
+    cp -f "$startdir/plasmarc" "$srcdir/"
+    cp -f "$startdir/plasma-org.kde.plasma.desktop-appletsrc" "$srcdir/"
+    cp -f "$startdir/metadata.json" "$srcdir/"
 }
 
 package() {
@@ -69,13 +97,6 @@ package() {
     # Branding directory
     install -dm755 "$pkgdir/usr/share/nexus-calamares/branding/nexus"
     install -m644 branding.desc "$pkgdir/usr/share/nexus-calamares/branding/nexus/branding.desc"
-
-    # Nexus skel configs for KDE Plasma
-    install -dm755 "$pkgdir/usr/share/nexus-skel/.config"
-    install -m644 kdeglobals "$pkgdir/usr/share/nexus-skel/.config/kdeglobals"
-    install -m644 kwinrc "$pkgdir/usr/share/nexus-skel/.config/kwinrc"
-    install -m644 plasmarc "$pkgdir/usr/share/nexus-skel/.config/plasmarc"
-    install -m644 plasma-org.kde.plasma.desktop-appletsrc "$pkgdir/usr/share/nexus-skel/.config/plasma-org.kde.plasma.desktop-appletsrc"
 
     # Look-and-feel theme "Nexus" for lookandfeeltool (Plasma 6 correct path: look-and-feel)
     # Isolated build: colors are pre-generated files, not derived from host theme
@@ -125,6 +146,6 @@ DEFAULTS_EOF
 
     # Legacy compat: Plasma 5 used lookandfeel (no hyphen) – keep a symlink/copy for older tools
     install -dm755 "$pkgdir/usr/share/plasma/lookandfeel/Nexus/contents"
-    cp -a "$pkgdir/usr/share/plasma/look-and-feel/nexus/contents"/* "$pkgdir/usr/share/plasma/lookandfeel/Nexus/contents/" 2>/dev/null || true
-    cp -a "$pkgdir/usr/share/plasma/look-and-feel/nexus/metadata.json" "$pkgdir/usr/share/plasma/lookandfeel/Nexus/metadata.json" 2>/dev/null || true
+    cp -a "$pkgdir/usr/share/plasma/look-and-feel/nexus/contents"/* "$pkgdir/usr/share/plasma/lookandfeel/Nexus/contents/"
+    cp -a "$pkgdir/usr/share/plasma/look-and-feel/nexus/metadata.json" "$pkgdir/usr/share/plasma/lookandfeel/Nexus/metadata.json"
 }

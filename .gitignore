@@ -59,3 +59,6 @@ localpkgs/nexus-keyring/nexus-revoked
 localpkgs/nexus-keyring/nexus-trusted
 localpkgs/nexus-keyring/*.pkg.tar.zst
 *.pkg.tar.zst.bak linguist-vendored
+
+# airootfs nexus-repo is generated at build time - do not commit stale db
+archiso/airootfs/usr/share/nexus-repo/

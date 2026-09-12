@@ -8,11 +8,13 @@ url="https://github.com/nexuslinux-os/NexusLinux"
 license=(GPL-3.0-or-later)
 source=(os-release lsb-release)
 sha256sums=('SKIP' 'SKIP')
+backup=(etc/os-release etc/lsb-release)
 
 package() {
     # Install os-release (primary)
-    install -Dm644 os-release "$pkgdir/etc/os-release"
     install -Dm644 os-release "$pkgdir/usr/lib/os-release"
+    install -dm755 "$pkgdir/etc"
+    ln -s ../usr/lib/os-release "$pkgdir/etc/os-release"
     
     # Install lsb-release
     install -Dm644 lsb-release "$pkgdir/etc/lsb-release"

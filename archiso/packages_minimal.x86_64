@@ -15,7 +15,14 @@ nexus-wallpapers
 nexus-keyring
 nexus-calamares
 nexus-kde-settings
-nexus-rust-tools
+nexus-info
+nexus-version
+nexus-check
+nexus-hardware
+nexus-micro
+nexus-installer
+nexus-theme
+nexus-build
 cryptsetup
 darkhttpd
 dhcpcd
@@ -78,7 +85,6 @@ mdadm
 lsb-release
 lsof
 lvm2
-mesa
 mkinitcpio
 mkinitcpio-archiso
 mkinitcpio-nfs-utils
@@ -89,7 +95,6 @@ net-tools
 networkmanager
 nilfs-utils
 noto-fonts
-nss-mdns
 ntfs-3g
 nvme-cli
 open-vm-tools

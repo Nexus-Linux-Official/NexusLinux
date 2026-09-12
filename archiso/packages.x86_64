@@ -114,7 +114,6 @@ lvm2
 mc
 memtest86+
 memtest86+-efi
-mesa
 mkinitcpio
 mkinitcpio-archiso
 mkinitcpio-nfs-utils
@@ -130,7 +129,6 @@ networkmanager
 nfs-utils
 nilfs-utils
 noto-fonts
-nss-mdns
 ntfs-3g
 ntp
 nvidia-utils
