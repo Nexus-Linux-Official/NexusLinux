@@ -108,26 +108,59 @@ EOF
 
 # Launch the Calamares installer directly on the live desktop instead of a
 # welcome app. The launcher always runs the normal (offline) install flow.
+# Use both skel and global xdg autostart so KDE Plasma (Wayland/X11) reliably starts it.
 mkdir -p /etc/skel/.config/autostart
+mkdir -p /etc/xdg/autostart
 cat > /etc/skel/.config/autostart/calamares.desktop <<'EOF'
 [Desktop Entry]
-Terminal=false
 Type=Application
-Categories=System;
-StartupNotify=false
+Version=1.0
 Name=Install Nexus Linux
 Name[tr]=Nexus Linux Kur
-Exec=/usr/local/bin/launch-calamares.sh
-Icon=calamares
+GenericName=System Installer
 Comment=Install Nexus Linux on this computer.
 Comment[tr]=Nexus Linux'u bu bilgisayara kur.
+Exec=/usr/local/bin/launch-calamares.sh
+Icon=calamares
+Terminal=false
+StartupNotify=true
+Categories=System;Qt;
+X-GNOME-Autostart-enabled=true
+X-KDE-autostart-phase=1
+X-KDE-StartupNotify=false
+Hidden=false
+NoDisplay=false
+DBusActivatable=false
 EOF
+# Global autostart ensures it runs even if skel copy is missed (Plasma reads /etc/xdg/autostart)
+install -Dm644 /etc/skel/.config/autostart/calamares.desktop /etc/xdg/autostart/calamares.desktop
+# Also ensure a copy in /etc/xdg/autostart is marked executable via profiledef
+chmod 644 /etc/xdg/autostart/calamares.desktop
 
 # mkarchiso copies /etc/skel into /home/liveuser before this script runs, so
 # the autostart dir does not exist there yet. Create it unconditionally,
 # otherwise Calamares would never autostart in the live session.
 mkdir -p /home/liveuser/.config/autostart
 cp /etc/skel/.config/autostart/calamares.desktop /home/liveuser/.config/autostart/calamares.desktop
+chown liveuser:liveuser /home/liveuser/.config/autostart/calamares.desktop 2>/dev/null || true
+
+# Ensure Calamares also appears in the application menu: the calamares package ships
+# /usr/share/applications/calamares.desktop with TryExec=calamares. If the binary is
+# not yet in PATH at menu-cache build time it may be hidden – ensure it is visible
+# by removing NoDisplay/Hidden and updating desktop database.
+if [ -f /usr/share/applications/calamares.desktop ]; then
+    sed -i 's/^NoDisplay=.*/NoDisplay=false/' /usr/share/applications/calamares.desktop 2>/dev/null || true
+    sed -i 's/^Hidden=.*/Hidden=false/' /usr/share/applications/calamares.desktop 2>/dev/null || true
+    # Ensure the Nexus branded name appears in menu as well
+    if ! grep -q "Name=Install Nexus" /usr/share/applications/calamares.desktop; then
+        sed -i 's/^Name=.*/Name=Install Nexus Linux/' /usr/share/applications/calamares.desktop 2>/dev/null || true
+    fi
+fi
+# Update desktop database so KDE finds the new .desktop files
+if command -v update-desktop-database &>/dev/null; then
+    update-desktop-database /usr/share/applications 2>/dev/null || true
+    update-desktop-database /etc/xdg/autostart 2>/dev/null || true
+fi
 
 # Compile the Nexus dconf database so GTK-based desktop environments
 # (GNOME, Cinnamon, MATE) pick up the Nexus wallpaper as their default.

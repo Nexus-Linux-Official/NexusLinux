@@ -1,23 +1,23 @@
 {
-    "KPackageStructure": "Plasma/LookAndFeel",
     "KPlugin": {
-        "Authors": [
-            {
-                "Email": "",
-                "Name": "Nexus Project"
-            }
-        ],
-        "Category": "Global Themes (Plasma 6)",
-        "ServiceTypes": [
-            "Plasma/LookAndFeel"
-        ],
+        "Authors": [{"Name": "Nexus Linux Team", "Email": "nexus@nexuslinux.org"}],
+        "Category": "Global Themes",
+        "Description": "Nexus Linux default look and feel",
         "EnabledByDefault": true,
+        "Icon": "preferences-desktop-theme",
+        "Id": "nexus",
+        "License": "GPL-3.0-or-later",
         "Name": "Nexus",
-        "Description": "Nexus Desktop Design",
-        "Id": "Nexus",
         "Version": "1.0",
-        "License": "GPL 3+",
-        "Keywords": "Desktop;Workspace;Appearance;Look and Feel;Logout;Lock;Suspend;Shutdown;Hibernate;",
-        "X-Plasma-APIVersion": "2"
-    }
+        "Website": "https://nexuslinux.org"
+    },
+    "KPackageStructure": "Plasma/LookAndFeel",
+    "X-Plasma-API-Minimum-Version": "6.0",
+    "Name": "Nexus",
+    "Comment": "Nexus Linux default look and feel",
+    "Icon": "preferences-desktop-theme",
+    "Author": "Nexus Linux Team",
+    "Version": "1.0",
+    "Website": "https://nexuslinux.org",
+    "License": "GPL-3.0-or-later"
 }

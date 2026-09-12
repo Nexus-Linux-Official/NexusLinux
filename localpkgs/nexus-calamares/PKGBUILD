@@ -77,11 +77,14 @@ package() {
     install -m644 plasmarc "$pkgdir/usr/share/nexus-skel/.config/plasmarc"
     install -m644 plasma-org.kde.plasma.desktop-appletsrc "$pkgdir/usr/share/nexus-skel/.config/plasma-org.kde.plasma.desktop-appletsrc"
 
-    # Look-and-feel theme "Nexus" for lookandfeeltool
+    # Look-and-feel theme "Nexus" for lookandfeeltool (Plasma 6 correct path: look-and-feel)
+    # Isolated build: colors are pre-generated files, not derived from host theme
     install -dm755 "$pkgdir/usr/share/plasma/look-and-feel/nexus/contents"
     install -m644 metadata.json "$pkgdir/usr/share/plasma/look-and-feel/nexus/metadata.json"
     install -dm755 "$pkgdir/usr/share/plasma/look-and-feel/nexus/contents/colors"
     install -m644 colors/BreezeDark.colors "$pkgdir/usr/share/plasma/look-and-feel/nexus/contents/colors/BreezeDark.colors"
+    install -m644 colors/BreezeLight.colors "$pkgdir/usr/share/plasma/look-and-feel/nexus/contents/colors/BreezeLight.colors"
+    install -m644 colors/BreezeTwilight.colors "$pkgdir/usr/share/plasma/look-and-feel/nexus/contents/colors/BreezeTwilight.colors"
     install -dm755 "$pkgdir/usr/share/plasma/look-and-feel/nexus/contents/fonts"
     install -m644 fonts/fonts.json "$pkgdir/usr/share/plasma/look-and-feel/nexus/contents/fonts/fonts.json"
     install -dm755 "$pkgdir/usr/share/plasma/look-and-feel/nexus/contents/icons"
@@ -90,16 +93,38 @@ package() {
     install -m644 plasma/desktoptheme.json "$pkgdir/usr/share/plasma/look-and-feel/nexus/contents/plasma/desktoptheme.json"
     install -dm755 "$pkgdir/usr/share/plasma/look-and-feel/nexus/contents/splash"
     install -m644 splash/Splash.qml "$pkgdir/usr/share/plasma/look-and-feel/nexus/contents/splash/Splash.qml"
+    # Also provide defaults file so plasma-apply-lookandfeel picks wallpaper/icons correctly
+    if [ -f "$srcdir/look-and-feel/nexus/contents/defaults" ]; then
+        install -Dm644 "$srcdir/look-and-feel/nexus/contents/defaults" "$pkgdir/usr/share/plasma/look-and-feel/nexus/contents/defaults"
+    else
+        # fallback defaults generated from nexus-skel defaults (icons/cursor/wallpaper)
+        install -Dm644 /dev/stdin "$pkgdir/usr/share/plasma/look-and-feel/nexus/contents/defaults" <<'DEFAULTS_EOF'
+[kcminputrc][Mouse]
+cursorTheme=breeze_cursors
 
-    # Look-and-feel theme "Nexus" for lookandfeeltool (legacy path)
-    install -dm755 "$pkgdir/usr/share/plasma/look-and-feel/nexus/contents"
-    install -m644 metadata.json "$pkgdir/usr/share/plasma/look-and-feel/nexus/metadata.json"
-    install -dm755 "$pkgdir/usr/share/plasma/look-and-feel/nexus/contents/fonts"
-    install -m644 fonts/fonts.json "$pkgdir/usr/share/plasma/look-and-feel/nexus/contents/fonts/fonts.json"
-    install -dm755 "$pkgdir/usr/share/plasma/look-and-feel/nexus/contents/icons"
-    install -m644 icons/icons.json "$pkgdir/usr/share/plasma/look-and-feel/nexus/contents/icons/icons.json"
-    install -dm755 "$pkgdir/usr/share/plasma/look-and-feel/nexus/contents/plasma"
-    install -m644 plasma/desktoptheme.json "$pkgdir/usr/share/plasma/look-and-feel/nexus/contents/plasma/desktoptheme.json"
-    install -dm755 "$pkgdir/usr/share/plasma/look-and-feel/nexus/contents/splash"
-    install -m644 splash/Splash.qml "$pkgdir/usr/share/plasma/look-and-feel/nexus/contents/splash/Splash.qml"
+[kdeglobals][General]
+ColorScheme=BreezeDark
+
+[kdeglobals][Icons]
+Theme=breeze-dark
+
+[plasmarc][Theme]
+name=breeze-dark
+
+[Wallpaper]
+Image=file:///usr/share/wallpapers/nexus/contents/images_dark/3840x2160.png
+
+[kwinrc][org.kde.kdecoration2]
+library=org.kde.breeze
+theme=Breeze
+
+[ksplashrc][KSplash]
+Theme=org.kde.breezedark.desktop
+DEFAULTS_EOF
+    fi
+
+    # Legacy compat: Plasma 5 used lookandfeel (no hyphen) – keep a symlink/copy for older tools
+    install -dm755 "$pkgdir/usr/share/plasma/lookandfeel/Nexus/contents"
+    cp -a "$pkgdir/usr/share/plasma/look-and-feel/nexus/contents"/* "$pkgdir/usr/share/plasma/lookandfeel/Nexus/contents/" 2>/dev/null || true
+    cp -a "$pkgdir/usr/share/plasma/look-and-feel/nexus/metadata.json" "$pkgdir/usr/share/plasma/lookandfeel/Nexus/metadata.json" 2>/dev/null || true
 }

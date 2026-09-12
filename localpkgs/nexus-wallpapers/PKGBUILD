@@ -51,7 +51,31 @@ with open('$pkgdir/usr/share/backgrounds/nexus/default.png', 'wb') as f:
 "
     }
     
-    # Symlink for Plasma
-    install -dm755 "$pkgdir/usr/share/wallpapers/nexus"
-    ln -sf ../backgrounds/nexus/default.png "$pkgdir/usr/share/wallpapers/nexus/default.png"
+    # Provide expected names for live ISO configs (wallpaper.png / wallpaper-dark.png)
+    cp "$pkgdir/usr/share/backgrounds/nexus/default.png" "$pkgdir/usr/share/backgrounds/nexus/wallpaper.png"
+    cp "$pkgdir/usr/share/backgrounds/nexus/default.png" "$pkgdir/usr/share/backgrounds/nexus/wallpaper-dark.png"
+
+    # Plasma wallpaper package structure: images (light) and images_dark (dark) with 3840x2160
+    install -dm755 "$pkgdir/usr/share/wallpapers/nexus/contents/images"
+    install -dm755 "$pkgdir/usr/share/wallpapers/nexus/contents/images_dark"
+    # Copy dark wallpaper for both, but keep symlink capability for plasma
+    cp "$pkgdir/usr/share/backgrounds/nexus/default.png" "$pkgdir/usr/share/wallpapers/nexus/contents/images/3840x2160.png"
+    cp "$pkgdir/usr/share/backgrounds/nexus/default.png" "$pkgdir/usr/share/wallpapers/nexus/contents/images_dark/3840x2160.png"
+    # Metadata for Plasma wallpaper
+    install -Dm644 /dev/stdin "$pkgdir/usr/share/wallpapers/nexus/metadata.json" <<'WALLMETA'
+{
+    "KPackageStructure": "Plasma/Wallpaper",
+    "KPlugin": {
+        "Authors": [{"Email": "hello@nexuslinux.org", "Name": "Nexus Linux Team"}],
+        "Id": "nexus",
+        "License": "CC-BY-SA-4.0",
+        "Name": "Nexus",
+        "Name[tr]": "Nexus",
+        "Version": "1.0"
+    },
+    "X-KDE-PlasmaImageWallpaper-AccentColor": "#0b0e16"
+}
+WALLMETA
+    # Legacy symlink for configs that still reference ../backgrounds path
+    ln -sf "../backgrounds/nexus/default.png" "$pkgdir/usr/share/wallpapers/nexus/default.png" 2>/dev/null || true
 }

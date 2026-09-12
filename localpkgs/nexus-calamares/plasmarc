@@ -1,3 +1,6 @@
+[Theme]
+name=breeze-dark
+
 [PlasmaViews][Panel 1][Defaults]
 panelPosition=Bottom
 panelSize=40
@@ -25,7 +28,7 @@ name=Breeze
 useGlobalSettings=false
 
 [Theme-plasma]
-name=Breeze
+name=breeze-dark
 useGlobalSettings=false
 
 [Theme-Qt]

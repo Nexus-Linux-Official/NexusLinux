@@ -182,6 +182,7 @@
           - meld
           - nano-syntax-highlighting
           - fastfetch
+          - neofetch
           - pv
           - python-defusedxml
           - python-packaging

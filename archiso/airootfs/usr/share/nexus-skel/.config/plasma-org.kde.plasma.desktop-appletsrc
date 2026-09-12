@@ -1,3 +1,7 @@
+[ActionPlugins]
+RightButton;NoModifier=org.kde.contextmenu
+Wheel:Vertical;NoModifier=switchdesktop
+
 [Containments][1]
 activityId=
 formfactor=0
@@ -12,7 +16,24 @@ lastResolution=1920x1080
 sortMode=-1
 
 [Containments][1][Wallpaper][org.kde.image][General]
+FillMode=PreserveAspectCrop
 Image=file:///usr/share/wallpapers/nexus/contents/images_dark/3840x2160.png
+
+[Containments][1][Applets][7]
+immutability=0
+plugin=org.kde.plasma.calendar
+
+[Containments][1][Applets][7][Configuration][General]
+showWeekNumbers=false
+
+[Containments][1][Applets][8]
+immutability=0
+plugin=org.kde.plasma.digitalclock
+
+[Containments][1][Applets][8][Configuration][Appearance]
+showDate=true
+showSeconds=false
+use24hFormat=2
 
 [Containments][2]
 activityId=
@@ -33,6 +54,9 @@ plugin=org.kde.plasma.pager
 [Containments][2][Applets][22]
 immutability=0
 plugin=org.kde.plasma.icontasks
+
+[Containments][2][Applets][22][Configuration][General]
+launchers=applications:systemsettings.desktop,applications:org.kde.discover.desktop,applications:org.gnome.Nautilus.desktop,applications:org.gnome.Ptyxis.desktop,applications:firefox.desktop
 
 [Containments][2][Applets][23]
 immutability=0
