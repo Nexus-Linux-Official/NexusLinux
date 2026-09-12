@@ -29,24 +29,13 @@ sha256sums=('SKIP'
            'SKIP')
 
 prepare() {
-    # Copy all source files from startdir to srcdir
-    # This ensures all files are available in the build directory
-    cp -r "$startdir/colors" "$srcdir/"
-    cp -r "$startdir/fonts" "$srcdir/"
-    cp -r "$startdir/icons" "$srcdir/"
-    cp -r "$startdir/plasma" "$srcdir/"
-    cp -r "$startdir/splash" "$srcdir/"
-    cp -r "$startdir/look-and-feel" "$srcdir/"
-    cp -f "$startdir/branding.desc" "$srcdir/"
-    cp -f "$startdir/write-os-release.sh" "$srcdir/"
-    cp -f "$startdir/shellprocess.conf" "$srcdir/"
-    cp -f "$startdir/netinstall.yaml" "$srcdir/"
-    cp -f "$startdir/settings_offline.conf" "$srcdir/"
-    cp -f "$startdir/kdeglobals" "$srcdir/"
-    cp -f "$startdir/kwinrc" "$srcdir/"
-    cp -f "$startdir/plasmarc" "$srcdir/"
-    cp -f "$startdir/plasma-org.kde.plasma.desktop-appletsrc" "$srcdir/"
-    cp -f "$startdir/metadata.json" "$srcdir/"
+    # Copy only subdirectories not in source array (top-level files already in srcdir via makepkg)
+    cp -r "$startdir/colors" "$srcdir/" 2>/dev/null || true
+    cp -r "$startdir/fonts" "$srcdir/" 2>/dev/null || true
+    cp -r "$startdir/icons" "$srcdir/" 2>/dev/null || true
+    cp -r "$startdir/plasma" "$srcdir/" 2>/dev/null || true
+    cp -r "$startdir/splash" "$srcdir/" 2>/dev/null || true
+    cp -r "$startdir/look-and-feel" "$srcdir/" 2>/dev/null || true
 }
 
 package() {
