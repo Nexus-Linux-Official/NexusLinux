@@ -307,6 +307,31 @@
           - gvfs-gphoto2
           - gvfs-mtp
           - gvfs-dnssd
+- name: "Cinnamon-Desktop"
+  description: "Cinnamon desktop environment - Provides advanced innovative features and a traditional user experience."
+  description[de]: "Cinnamon ist ein Linux-Desktop, der fortschrittliche innovative Funktionen und ein traditionelles Benutzererlebnis bietet."
+  description[fr]: "Cinnamon est un bureau Linux qui offre des fonctionnalités innovantes et une expérience utilisateur traditionnelle."
+  description[it]: "Cinnamon è un desktop Linux che offre funzionalità innovative avanzate e un'esperienza d'uso tradizionale."
+  description[es]: "Cinnamon es un escritorio Linux que ofrece funciones innovadoras avanzadas y una experiencia de usuario tradicional."
+  description[pt_BR]: "Cinnamon é um ambiente de trabalho para Linux que oferece recursos avançados e inovadores, mantendo uma experiência de uso tradicional."
+  description[ru]: "Cinnamon - это рабочий стол Linux, который предоставляет передовые инновационные функции и традиционный пользовательский опыт."
+  description[zh_CN]: "Cinnamon是Linux桌面，提供先进的创新功能和传统的用户体验。"
+  description[ja]: "Cinnamonは、先進的な革新的機能と伝統的なユーザーエクスペリエンスを提供するLinuxデスクトップです。"
+  platform: "desktop"
+  hidden: false
+  selected: false
+  critical: true
+  packages:
+    - cinnamon
+    - cinnamon-control-center
+    - cinnamon-screensaver
+    - cinnamon-session
+    - cinnamon-settings-daemon
+    - nemo
+    - nemo-fileroller
+    - ptyxis
+    - gnome-terminal
+    - gdm
 - name: "Cosmic"
   description: "Linux desktop, which provides an environment that features advanced functionality and a responsive design."
   description[de]: "Insgesamt ist COSMIC eine umfassende Betriebssystem-GUI (grafische Benutzeroberfläche), die erweiterte Funktionalitäten und ein reaktionsschnelles Design bietet. Seine modulare Architektur ist speziell darauf ausgelegt, die Erstellung einzigartiger, markenspezifischer Benutzererfahrungen zu erleichtern."
