@@ -1,0 +1,22 @@
+# Maintainer: Nexus Linux <nexus@nexuslinux.org>
+# pamac (CLI + GTK4 GUI) built locally for Nexus ISO (AUR-only upstream)
+pkgname=pamac
+pkgver=11.7.5
+pkgrel=1
+pkgdesc="Graphical Package Manager for Arch Linux with Alpm, AUR, Appstream, Flatpak and Snap support"
+arch=('x86_64')
+url="https://github.com/manjaro/pamac"
+license=('GPL-3.0-or-later')
+depends=('libpamac' 'gtk4' 'libadwaita' 'libhandy' 'libnotify' 'polkit')
+makedepends=('meson' 'vala' 'gobject-introspection' 'gettext' 'git' 'pkgconf' 'asciidoc' 'ninja')
+source=("$pkgname-$pkgver.tar.gz::https://github.com/manjaro/pamac/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('SKIP')
+
+build() {
+  arch-meson "pamac-$pkgver" build
+  meson compile -C build
+}
+
+package() {
+  meson install -C build --destdir "$pkgdir"
+}

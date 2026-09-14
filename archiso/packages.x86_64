@@ -72,6 +72,7 @@ kscreen
 ldns
 less
 libfido2
+libpamac
 libusb-compat
 libwnck3
 linux-atm
@@ -139,6 +140,7 @@ openssh
 openvpn
 orca
 os-prober
+pamac
 parted
 partitionmanager
 pipewire
@@ -199,3 +201,4 @@ xfsprogs
 xl2tpd
 plymouth
 fastfetch
+yay

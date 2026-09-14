@@ -58,6 +58,7 @@ kscreen
 ldns
 less
 libfido2
+libpamac
 libusb-compat
 libwnck3
 linux-zen
@@ -100,6 +101,7 @@ nvme-cli
 open-vm-tools
 openssh
 os-prober
+pamac
 parted
 pipewire
 pipewire-alsa
@@ -148,3 +150,4 @@ xdg-user-dirs-gtk
 xdg-utils
 xfsprogs
 plymouth
+yay

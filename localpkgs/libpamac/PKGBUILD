@@ -1,0 +1,23 @@
+# Maintainer: Nexus Linux <nexus@nexuslinux.org>
+# libpamac built locally for Nexus ISO (pamac stack is AUR-only upstream)
+pkgname=libpamac
+pkgver=11.7.3
+pkgrel=1
+pkgdesc="Pamac package manager library"
+arch=('x86_64')
+url="https://github.com/manjaro/libpamac"
+license=('GPL-3.0-or-later')
+depends=('pacman' 'libnotify' 'glib2' 'json-glib' 'pacutils')
+makedepends=('meson' 'vala' 'gobject-introspection' 'gettext' 'git' 'pkgconf')
+source=("$pkgname-$pkgver.tar.gz::https://github.com/manjaro/libpamac/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('SKIP')
+
+build() {
+  arch-meson "libpamac-$pkgver" build \
+    -Denable-docs=false
+  meson compile -C build
+}
+
+package() {
+  meson install -C build --destdir "$pkgdir"
+}
