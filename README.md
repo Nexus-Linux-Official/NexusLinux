@@ -11,6 +11,10 @@
   <img src="https://img.shields.io/github/license/Nexus-Linux-Official/NexusLinux?style=for-the-badge" alt="License">
   <img src="https://img.shields.io/github/issues/Nexus-Linux-Official/NexusLinux?style=for-the-badge" alt="Issues">
   <img src="https://img.shields.io/github/commit-activity/m/Nexus-Linux-Official/NexusLinux?style=for-the-badge" alt="Commit Activity">
+  <img src="https://img.shields.io/github/stars/Nexus-Linux-Official/NexusLinux?style=for-the-badge" alt="Stars">
+  <img src="https://img.shields.io/github/forks/Nexus-Linux-Official/NexusLinux?style=for-the-badge" alt="Forks">
+  <img src="https://img.shields.io/github/issues-pr/Nexus-Linux-Official/NexusLinux?style=for-the-badge" alt="Pull Requests">
+  <img src="https://img.shields.io/github/last-commit/Nexus-Linux-Official/NexusLinux?style=for-the-badge" alt="Last Commit">
 </p>
 
 **Pure Arch · KDE Plasma · Calamares · Rust · Zig · Native Tools**
