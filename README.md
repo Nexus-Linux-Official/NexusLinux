@@ -7,14 +7,115 @@
 ### A modern Linux distribution built on pure Arch Linux.
 
 <p>
+  <!-- GitHub -->
   <img src="https://img.shields.io/github/v/release/Nexus-Linux-Official/NexusLinux?style=for-the-badge&label=Release" alt="Release">
   <img src="https://img.shields.io/github/license/Nexus-Linux-Official/NexusLinux?style=for-the-badge" alt="License">
-  <img src="https://img.shields.io/github/issues/Nexus-Linux-Official/NexusLinux?style=for-the-badge" alt="Issues">
-  <img src="https://img.shields.io/github/commit-activity/m/Nexus-Linux-Official/NexusLinux?style=for-the-badge" alt="Commit Activity">
   <img src="https://img.shields.io/github/stars/Nexus-Linux-Official/NexusLinux?style=for-the-badge" alt="Stars">
   <img src="https://img.shields.io/github/forks/Nexus-Linux-Official/NexusLinux?style=for-the-badge" alt="Forks">
-  <img src="https://img.shields.io/github/issues-pr/Nexus-Linux-Official/NexusLinux?style=for-the-badge" alt="Pull Requests">
+  <img src="https://img.shields.io/github/watchers/Nexus-Linux-Official/NexusLinux?style=for-the-badge" alt="Watchers">
+  <img src="https://img.shields.io/github/contributors/Nexus-Linux-Official/NexusLinux?style=for-the-badge" alt="Contributors">
+</p>
+
+<p>
+  <!-- Issues & Pull Requests -->
+  <img src="https://img.shields.io/github/issues/Nexus-Linux-Official/NexusLinux?style=for-the-badge" alt="Open Issues">
+  <img src="https://img.shields.io/github/issues-closed/Nexus-Linux-Official/NexusLinux?style=for-the-badge" alt="Closed Issues">
+  <img src="https://img.shields.io/github/issues-pr/Nexus-Linux-Official/NexusLinux?style=for-the-badge" alt="Open Pull Requests">
+  <img src="https://img.shields.io/github/issues-pr-closed/Nexus-Linux-Official/NexusLinux?style=for-the-badge" alt="Closed Pull Requests">
+  <img src="https://img.shields.io/github/commit-activity/m/Nexus-Linux-Official/NexusLinux?style=for-the-badge" alt="Commit Activity">
   <img src="https://img.shields.io/github/last-commit/Nexus-Linux-Official/NexusLinux?style=for-the-badge" alt="Last Commit">
+</p>
+
+<p>
+  <!-- Repository -->
+  <img src="https://img.shields.io/github/repo-size/Nexus-Linux-Official/NexusLinux?style=for-the-badge" alt="Repository Size">
+  <img src="https://img.shields.io/github/languages/code-size/Nexus-Linux-Official/NexusLinux?style=for-the-badge" alt="Code Size">
+  <img src="https://img.shields.io/github/languages/count/Nexus-Linux-Official/NexusLinux?style=for-the-badge" alt="Languages">
+  <img src="https://img.shields.io/github/languages/top/Nexus-Linux-Official/NexusLinux?style=for-the-badge" alt="Top Language">
+  <img src="https://img.shields.io/github/directory-file-count/Nexus-Linux-Official/NexusLinux?style=for-the-badge" alt="Files">
+</p>
+
+<p>
+  <!-- Linux Stack -->
+  <img src="https://img.shields.io/badge/Arch%20Linux-1793D1?style=for-the-badge&logo=arch-linux&logoColor=white" alt="Arch Linux">
+  <img src="https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black" alt="Linux">
+  <img src="https://img.shields.io/badge/KDE%20Plasma-1D99F3?style=for-the-badge&logo=kde&logoColor=white" alt="KDE Plasma">
+  <img src="https://img.shields.io/badge/Wayland-FFBC00?style=for-the-badge&logo=wayland&logoColor=black" alt="Wayland">
+  <img src="https://img.shields.io/badge/X11-F28834?style=for-the-badge&logo=x.org&logoColor=white" alt="X11">
+  <img src="https://img.shields.io/badge/systemd-1F1F1F?style=for-the-badge&logo=systemd&logoColor=white" alt="systemd">
+  <img src="https://img.shields.io/badge/Pacman-1793D1?style=for-the-badge&logo=arch-linux&logoColor=white" alt="Pacman">
+</p>
+
+<p>
+  <!-- Development -->
+  <img src="https://img.shields.io/badge/Rust-000000?style=for-the-badge&logo=rust&logoColor=white" alt="Rust">
+  <img src="https://img.shields.io/badge/Zig-F7A41D?style=for-the-badge&logo=zig&logoColor=black" alt="Zig">
+  <img src="https://img.shields.io/badge/Bash-4EAA25?style=for-the-badge&logo=gnu-bash&logoColor=white" alt="Bash">
+  <img src="https://img.shields.io/badge/Shell-4EAA25?style=for-the-badge&logo=gnu-bash&logoColor=white" alt="Shell">
+  <img src="https://img.shields.io/badge/CMake-064F8C?style=for-the-badge&logo=cmake&logoColor=white" alt="CMake">
+  <img src="https://img.shields.io/badge/GNU%20Make-A42E2B?style=for-the-badge&logo=gnu&logoColor=white" alt="GNU Make">
+</p>
+
+<p>
+  <!-- KDE / Qt -->
+  <img src="https://img.shields.io/badge/Qt-41CD52?style=for-the-badge&logo=qt&logoColor=white" alt="Qt">
+  <img src="https://img.shields.io/badge/KDE%20Frameworks-1D99F3?style=for-the-badge&logo=kde&logoColor=white" alt="KDE Frameworks">
+  <img src="https://img.shields.io/badge/Plasma-1D99F3?style=for-the-badge&logo=kde&logoColor=white" alt="Plasma">
+  <img src="https://img.shields.io/badge/KWin-1D99F3?style=for-the-badge&logo=kde&logoColor=white" alt="KWin">
+</p>
+
+<p>
+  <!-- Installer -->
+  <img src="https://img.shields.io/badge/Calamares-Installer-2684FF?style=for-the-badge" alt="Calamares">
+  <img src="https://img.shields.io/badge/UEFI-Supported-0078D4?style=for-the-badge" alt="UEFI">
+  <img src="https://img.shields.io/badge/BIOS-Supported-555555?style=for-the-badge" alt="BIOS">
+  <img src="https://img.shields.io/badge/x86__64-Supported-555555?style=for-the-badge" alt="x86_64">
+</p>
+
+<p>
+  <!-- Build & CI -->
+  <img src="https://img.shields.io/github/actions/workflow/status/Nexus-Linux-Official/NexusLinux/build.yml?style=for-the-badge&label=Build" alt="Build">
+  <img src="https://img.shields.io/github/actions/workflow/status/Nexus-Linux-Official/NexusLinux/ci.yml?style=for-the-badge&label=CI" alt="CI">
+  <img src="https://img.shields.io/github/check-runs/Nexus-Linux-Official/NexusLinux/main?style=for-the-badge&label=Checks" alt="Checks">
+</p>
+
+<p>
+  <!-- Project -->
+  <img src="https://img.shields.io/badge/Status-Development-FFB000?style=for-the-badge" alt="Development Status">
+  <img src="https://img.shields.io/badge/Channel-Stable-2EA44F?style=for-the-badge" alt="Stable">
+  <img src="https://img.shields.io/badge/Architecture-Independent-6E40C9?style=for-the-badge" alt="Independent">
+  <img src="https://img.shields.io/badge/Base-Pure%20Arch-1793D1?style=for-the-badge" alt="Pure Arch">
+</p>
+
+<p>
+  <!-- Open Source -->
+  <img src="https://img.shields.io/badge/Open%20Source-Yes-2EA44F?style=for-the-badge" alt="Open Source">
+  <img src="https://img.shields.io/badge/FOSS-Yes-2EA44F?style=for-the-badge" alt="FOSS">
+  <img src="https://img.shields.io/badge/Community-Driven-8250DF?style=for-the-badge" alt="Community Driven">
+  <img src="https://img.shields.io/badge/Independent%20Distribution-Yes-6E40C9?style=for-the-badge" alt="Independent Distribution">
+</p>
+
+<p>
+  <!-- Documentation -->
+  <img src="https://img.shields.io/badge/Documentation-Available-0969DA?style=for-the-badge" alt="Documentation">
+  <img src="https://img.shields.io/badge/Wiki-Available-0969DA?style=for-the-badge" alt="Wiki">
+  <img src="https://img.shields.io/badge/Contributing-Welcome-2EA44F?style=for-the-badge" alt="Contributing">
+  <img src="https://img.shields.io/badge/Issues-Open-DA3633?style=for-the-badge" alt="Issues">
+</p>
+
+<p>
+  <!-- Git -->
+  <img src="https://img.shields.io/badge/Git-Git-F05032?style=for-the-badge&logo=git&logoColor=white" alt="Git">
+  <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub">
+  <img src="https://img.shields.io/badge/GitHub%20Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white" alt="GitHub Actions">
+</p>
+
+<p>
+  <!-- Desktop -->
+  <img src="https://img.shields.io/badge/Desktop-KDE%20Plasma-1D99F3?style=for-the-badge&logo=kde&logoColor=white" alt="KDE Plasma">
+  <img src="https://img.shields.io/badge/Display%20Server-Wayland-FFBC00?style=for-the-badge" alt="Wayland">
+  <img src="https://img.shields.io/badge/Display%20Server-X11-555555?style=for-the-badge" alt="X11">
+  <img src="https://img.shields.io/badge/Terminal-Konsole-1D99F3?style=for-the-badge" alt="Konsole">
 </p>
 
 **Pure Arch · KDE Plasma · Calamares · Rust · Zig · Native Tools**
