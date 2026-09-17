@@ -1,183 +1,734 @@
-<p align="center">
-  <img src="readme-banner.svg" alt="Nexus Linux Banner" width="100%">
-</p>
+<div align="center">
+
+<img src="readme-banner.svg" alt="Nexus Linux" width="900">
 
 # Nexus Linux
 
-A Linux distribution built on **pure Arch Linux** with `archiso`. Nexus Linux ships the KDE Plasma desktop, the Calamares installer (offline and online), and its own repository of packages with Nexus branding. Includes **8 Rust-based CLI tools** for system management, hardware detection, health checks, and build automation.
+### A modern Linux distribution built on pure Arch Linux.
 
-This repository contains the live ISO build configuration and the source for the Nexus packages.
+<p>
+  <img src="https://img.shields.io/github/v/release/Nexus-Linux-Official/NexusLinux?style=for-the-badge&label=Release" alt="Release">
+  <img src="https://img.shields.io/github/license/Nexus-Linux-Official/NexusLinux?style=for-the-badge" alt="License">
+  <img src="https://img.shields.io/github/issues/Nexus-Linux-Official/NexusLinux?style=for-the-badge" alt="Issues">
+  <img src="https://img.shields.io/github/commit-activity/m/Nexus-Linux-Official/NexusLinux?style=for-the-badge" alt="Commit Activity">
+</p>
 
-## Repository layout
+**Pure Arch · KDE Plasma · Calamares · Rust · Zig · Native Tools**
 
+Nexus Linux is an independent Linux distribution built on the Arch Linux ecosystem,
+designed around a clean desktop experience, straightforward installation,
+native system tooling, and a maintainable distribution architecture.
+
+</div>
+
+---
+
+## ✨ Overview
+
+Nexus Linux is built directly on **Arch Linux** using the official `archiso`
+infrastructure.
+
+The project adds a complete Nexus-specific layer around the Arch foundation,
+including:
+
+* KDE Plasma desktop integration
+* Nexus-branded system configuration
+* Graphical Calamares installation
+* Online and offline installation support
+* A dedicated Nexus package repository
+* Signed Nexus packages and repository metadata
+* Native Rust system utilities
+* Zig development support
+* Hardware detection and system-health tooling
+* Nexus KDE defaults
+* Nexus wallpapers and branding
+* Custom boot and installer integration
+* Automated ISO and package build infrastructure
+
+The repository contains the live ISO configuration, Nexus package sources,
+Rust workspace, build tooling, testing infrastructure, and release tooling.
+
+---
+
+## 🎯 Project Goals
+
+Nexus Linux focuses on a few core principles:
+
+| Goal            | Nexus approach                              |
+| --------------- | ------------------------------------------- |
+| Base            | Arch Linux                                  |
+| ISO builder     | `archiso`                                   |
+| Package manager | `pacman`                                    |
+| Nexus packages  | Dedicated `[nexus]` repository              |
+| Desktop         | KDE Plasma                                  |
+| Installer       | Calamares                                   |
+| System tooling  | Rust + Zig                                  |
+| Package signing | GPG                                         |
+| Build system    | Bash + Arch packaging + Rust                |
+| Security        | Signed packages and controlled repositories |
+| Development     | Open-source and community-oriented          |
+
+Nexus aims to keep the underlying Arch ecosystem familiar while providing
+a more integrated distribution experience.
+
+---
+
+# 🖥️ Desktop Experience
+
+## KDE Plasma
+
+KDE Plasma is the primary Nexus Linux desktop environment.
+
+Nexus provides its own Plasma configuration through:
+
+```text
+localpkgs/nexus-kde-settings/
 ```
-.
-├── archiso/                    # airootfs overlay, pacman.conf, package lists
-├── localpkgs/                  # Nexus packages (built into a local repo)
-│   ├── nexus-branding/         # os-release, lsb-release
-│   ├── nexus-wallpapers/       # Default wallpapers
-│   ├── nexus-keyring/          # Package signing keys
-│   ├── nexus-calamares/        # Calamares modules, branding, config
-│   ├── nexus-kde-settings/     # KDE Plasma defaults
-│   ├── nexus-rust-tools/       # 8 Rust CLI tools (meta-package)
-│   └── rust-workspace/         # Cargo workspace (8 crates)
-├── .vscode/                    # VS Code config (tasks, debug, snippets)
-├── .github/                    # GitHub Linguist config
-├── build-nexus-iso.sh          # one-shot ISO build (+ release artifacts)
-├── build-nexus-repo.sh         # package build + profile wiring
-├── release-nexus.sh            # publish repo/ISO to GitHub Releases
-├── buildiso.sh                 # upstream ISO build driver
-├── util-iso.sh                 # profile/version helpers
-├── CHANGELOG.md                # Version history
-├── CONTRIBUTING.md             # Contribution guide
-├── SECURITY.md                 # Security policy
-├── GITHUB_ISSUES.md            # 42 issues catalog from code review
-├── create_github_issues.py     # Auto-create GitHub issues
-└── readme-banner.svg           # Banner image
+
+This package provides Nexus-specific defaults for components such as:
+
+* KDE global configuration
+* Plasma configuration
+* KWin configuration
+* Desktop defaults
+* Nexus visual integration
+
+Nexus wallpapers are maintained separately through:
+
+```text
+localpkgs/nexus-wallpapers/
 ```
 
-## Packages (`localpkgs/`)
+---
 
-### Core Nexus Packages
+## Desktop Options
 
-| Package | Purpose |
-| --- | --- |
-| `nexus-branding` | os-release, lsb-release, /usr/lib/os-release |
-| `nexus-wallpapers` | Default wallpapers + per-desktop defaults |
-| `nexus-keyring` | Nexus package signing keys (`nexus.gpg`, `nexus-trusted`, `nexus-revoked`) |
-| `nexus-calamares` | Calamares modules, branding, config (Calamares app built separately) |
-| `nexus-kde-settings` | Default KDE Plasma settings (kdeglobals, kwinrc, plasmarc, plasmarc) |
-| `nexus-rust-tools` | **Meta-package: 8 Rust CLI tools** (see below) |
+The installer currently supports multiple desktop configurations:
 
-### Rust CLI Tools (`nexus-rust-tools` meta-package)
+| Desktop        | Availability |
+| -------------- | ------------ |
+| **KDE Plasma** | Primary      |
+| GNOME          | Available    |
+| COSMIC         | Available    |
+| Cinnamon       | Available    |
 
-| Binary | Purpose |
-| --- | --- |
-| `nexus-info` | System information display (JSON/pretty output) |
-| `nexus-version` | Version info tool (JSON/short/full) |
-| `nexus-check` | System health check (disk, memory, network, services, security) |
-| `nexus-hardware` | Hardware detection (CPU, RAM, GPU, disks, network, USB, PCI) |
-| `nexus-micro` | Micro settings (zram, hostname, services) |
-| `nexus-installer` | Package installer backend (alpm bindings) |
-| `nexus-theme` | Wallpaper/theme utilities (generate, apply, list) |
-| `nexus-build` | Build helpers (verify, validate, gen pkglist, create ISO) |
+The desktop selection is integrated into the Nexus installation workflow.
 
-### Rust Workspace (`localpkgs/rust-workspace/`)
+---
 
-Cargo workspace with 8 crates:
-- `nexus-info`, `nexus-version`, `nexus-check`, `nexus-hardware`
-- `nexus-micro`, `nexus-installer-backend`, `nexus-theme`, `nexus-build-helpers`
+# 💿 Installation
 
-Built as `nexus-rust-tools` meta-package via `cargo build --release --frozen --workspace`
+Nexus Linux uses **Calamares** as its graphical installer.
 
-## Building the ISO
+The project provides both online and offline installation paths.
 
-Build on an Arch-based host (needs `pacman`/`makepkg`; this cannot run in a sandbox).
+```text
+                 Nexus Linux ISO
+                       │
+                       ▼
+                Live KDE Plasma
+                       │
+                       ▼
+                  Calamares
+                       │
+              ┌────────┴────────┐
+              │                 │
+          Online             Offline
+              │                 │
+              └────────┬────────┘
+                       ▼
+                Install System
+                       │
+                       ▼
+                Nexus Linux
+```
 
-### Requirements
+The Nexus Calamares integration is maintained under:
+
+```text
+localpkgs/nexus-calamares/
+```
+
+The project also builds Calamares from source as part of the ISO build
+process.
+
+---
+
+# 🏗️ Architecture
+
+Nexus Linux can be viewed as several layers built on top of one another:
+
+```text
+┌─────────────────────────────────────────┐
+│              Nexus Linux                │
+├─────────────────────────────────────────┤
+│ KDE Plasma · Calamares · Nexus Tools    │
+├─────────────────────────────────────────┤
+│ Nexus Packages · Nexus Repository       │
+├─────────────────────────────────────────┤
+│ pacman · Arch Packaging · systemd       │
+├─────────────────────────────────────────┤
+│              Arch Linux                  │
+└─────────────────────────────────────────┘
+```
+
+The distribution itself is assembled using the Arch Linux packaging
+ecosystem and `archiso`.
+
+Archiso provides the ISO-generation infrastructure, while Nexus maintains
+the distribution-specific profile, packages, configuration, and tooling.
+
+---
+
+# 📦 Nexus Package Repository
+
+Nexus Linux maintains its own package repository:
+
+```ini
+[nexus]
+```
+
+The repository is used for Nexus-specific packages rather than replacing
+the standard Arch package ecosystem.
+
+The build system generates the repository database using `repo-add` and
+integrates it into the ISO's package configuration.
+
+Nexus packages include:
+
+| Package              | Purpose                                       |
+| -------------------- | --------------------------------------------- |
+| `nexus-branding`     | Nexus OS identity and release information     |
+| `nexus-wallpapers`   | Nexus wallpapers and desktop defaults         |
+| `nexus-keyring`      | Nexus package signing keys                    |
+| `nexus-calamares`    | Calamares modules, configuration and branding |
+| `nexus-kde-settings` | KDE Plasma defaults                           |
+| `nexus-rust-tools`   | Nexus native Rust utilities                   |
+
+---
+
+# 🦀 Rust System Tooling
+
+Nexus includes a dedicated Rust workspace containing **8 native CLI tools**.
+
+### Tools
+
+| Binary            | Purpose                          |
+| ----------------- | -------------------------------- |
+| `nexus-info`      | System information               |
+| `nexus-version`   | Nexus version information        |
+| `nexus-check`     | System health checks             |
+| `nexus-hardware`  | Hardware detection               |
+| `nexus-micro`     | Lightweight system configuration |
+| `nexus-installer` | Package installation backend     |
+| `nexus-theme`     | Theme and wallpaper utilities    |
+| `nexus-build`     | Build and ISO helpers            |
+
+The workspace is located at:
+
+```text
+localpkgs/rust-workspace/
+```
+
+The workspace contains:
+
+```text
+nexus-info
+nexus-version
+nexus-check
+nexus-hardware
+nexus-micro
+nexus-installer-backend
+nexus-theme
+nexus-build-helpers
+```
+
+It is built as a single workspace:
+
+```bash
+cargo build --release --frozen --workspace
+```
+
+and packaged through:
+
+```text
+nexus-rust-tools
+```
+
+---
+
+# ⚡ Zig
+
+Zig is also part of the Nexus Linux development toolchain.
+
+Nexus includes Zig alongside Rust to provide a modern native systems-programming
+environment.
+
+Zig is intended for projects and components where:
+
+* low-level systems programming is useful
+* predictable native binaries are desired
+* C interoperability is required
+* simple cross-compilation is beneficial
+* lightweight native utilities are being developed
+
+The project therefore supports both:
+
+```text
+Rust
+  +
+Zig
+  ↓
+Native Nexus tooling
+```
+
+Rust currently powers the existing Nexus CLI workspace, while Zig is available
+as an additional systems-development language for future Nexus components.
+
+---
+
+# 🔐 Security
+
+Security is integrated into the distribution build and package infrastructure.
+
+### Signed packages
+
+Nexus packages can be cryptographically signed using the Nexus package
+signing infrastructure.
+
+### Nexus keyring
+
+The signing keys are maintained by:
+
+```text
+localpkgs/nexus-keyring/
+```
+
+The package contains Nexus repository trust information including:
+
+```text
+nexus.gpg
+nexus-trusted
+nexus-revoked
+```
+
+### Repository verification
+
+The Nexus repository is configured to verify package signatures.
+
+### Controlled package sources
+
+Nexus maintains its own package repository alongside the official Arch
+repositories.
+
+---
+
+# 🧰 Hardware Support
+
+Nexus provides a broad hardware-support base through the packages included
+in its ISO profiles.
+
+The project includes support for areas such as:
+
+### Graphics
+
+* Mesa
+* Intel graphics
+* AMD Radeon
+* Vulkan
+* VA-API
+* VDPAU
+
+### Wireless
+
+* Intel firmware
+* MediaTek firmware
+* Realtek wireless hardware
+* Broadcom wireless hardware
+
+### Bluetooth
+
+* BlueZ
+* BlueZ utilities
+* Bluetooth plugins
+
+### Printing & Scanning
+
+* CUPS
+* CUPS filters
+* SANE
+* AirScan
+* Simple Scan
+
+### Firmware
+
+Linux firmware packages are included to provide compatibility with a wide
+range of modern and older hardware.
+
+---
+
+# 🔨 Building Nexus Linux
+
+Nexus Linux is designed to be built from an **Arch Linux-based development
+environment**.
+
+The build system uses standard Arch tooling including:
+
+* `pacman`
+* `makepkg`
+* `archiso`
+* `mkarchiso`
+* `repo-add`
+* GPG
+* Cargo
+* Rust
+* Zig
+* Bash
+
+The repository contains dedicated scripts for ISO, repository and release
+operations.
+
+## Requirements
+
+Install the main ISO build dependency:
 
 ```bash
 sudo pacman -S archiso --needed
 ```
 
-### One-shot build
+The main build script handles additional build dependencies.
+
+---
+
+## Clone the Repository
 
 ```bash
-cd /path/to/nexus-live
-./build-nexus-iso.sh                 # default profile: "desktop minimal"
-./build-nexus-iso.sh "desktop"       # single profile
+git clone https://github.com/Nexus-Linux-Official/NexusLinux.git
+cd NexusLinux
 ```
 
-This script:
+---
 
-1. Installs build dependencies (archiso, base-devel, git, Calamares deps, Rust toolchain)
-2. Builds Calamares from source (v3.3.12) as a package
-3. Builds all local Nexus packages via `makepkg` and populates `localrepo/`
-4. Creates local pacman repo database (`repo-add`)
-4. Registers `[nexus]` repo in `pacman.conf` (priority over core/extra)
-5. Builds ISO via `mkarchiso` and writes release artifacts to `out/<profile>/`
-   (`.sig`, `SHA256SUMS`, `.img`, `pkgs.txt`)
+## Build an ISO
 
-### Manual steps
+Default profile:
 
 ```bash
-# build packages + create local repo
+./build-nexus-iso.sh
+```
+
+Build a specific profile:
+
+```bash
+./build-nexus-iso.sh "desktop"
+```
+
+The build system performs the major stages automatically:
+
+```text
+Dependencies
+     ↓
+Calamares
+     ↓
+Nexus packages
+     ↓
+Local repository
+     ↓
+Package signing
+     ↓
+Archiso
+     ↓
+ISO
+     ↓
+Checksums + signatures
+```
+
+The build script currently handles dependency installation, Calamares
+source compilation, local package builds, repository generation and ISO
+generation.
+
+---
+
+# 📦 Building the Nexus Repository
+
+The Nexus repository can be built independently:
+
+```bash
 ./build-nexus-repo.sh
-
-# wire packages into the ISO profile (registers local repo in pacman.conf)
-./build-nexus-repo.sh --apply-swap
-
-# build the ISO
-./buildiso.sh -p "desktop minimal" -v
 ```
 
-## Live desktop installer
+The generated package repository is used during ISO construction.
 
-On the live desktop Calamares opens directly (autostart entry), instead of a welcome/hello app:
+Conceptually:
 
-- `/usr/local/bin/launch-calamares.sh` — picks the online installer when a network is available, otherwise the offline one
-- `/usr/local/bin/calamares-online.sh` — refreshes the keyring, applies Nexus branding, launches Calamares
-- `/usr/local/bin/calamares-offline.sh` — network-free variant using the Calamares shipped on the ISO
-
-## DE Selection
-
-Only 4 desktop environments available in Calamares:
-- **KDE Plasma** (recommended, default)
-- **GNOME**
-- **COSMIC**
-- **Cinnamon**
-
-## Hardware Support (Debian-style out-of-the-box)
-
-- **Firmware**: `linux-firmware-*` (qlogic, bnx2x, liquidio, nfp, qcom, whence)
-- **GPU**: `intel-media-driver`, `vulkan-intel`, `vulkan-radeon`, `libva-*`, `mesa-vdpau`
-- **Network**: `r8168`, `broadcom-wl-dkms`, `rtl8821cu-dkms`, `rtl8852be-dkms`, `mt7921-firmware`
-- **Bluetooth**: `bluez`, `bluez-utils`, `bluez-plugins`, `bluez-hid2hci`
-- **Printing/Scanning**: `cups`, `cups-filters`, `cups-pdf`, `ghostscript`, `gsfonts`, `system-config-printer`, `simple-scan`, `sane`, `sane-airscan`
-- **Avahi/mDNS**: `avahi`, `nss-mdns`
-
-## Security
-
-* **ClamAV**: Antivirus included by default (`clamav` daemon + `clamtk` GUI)
-* **GRUB Theme**: Nexus-branded with dark blue gradient
-* **Calamares**: Built from source (v3.3.12), minimal modules
-
-## Signing key
-
-The master signing key is generated by `localpkgs/nexus-keyring/gen-nexus-keyring.sh`:
-
-- Fingerprint: `F4C57604C90E90CD6AB3633F2AA4846E14CBE512`
-- Identity: `Nexus Linux Packaging <nexus@nexuslinux.org>`
-
-**Back up the private key** under `localpkgs/nexus-keyring/gnupg/`.
-
-## Repository signing
-
-Every Nexus package and the `nexus.db` repository database are signed with the master key:
-
-- `build-nexus-repo.sh` builds with `makepkg --sign` and adds the database with `repo-add -s -k` using `GPGKEY`/`GNUPGHOME`
-- The `nexus-keyring` package's install script runs `pacman-key --add` and `pacman-key --lsign-key F4C57604C90E90CD6AB3633F2AA4846E14CBE512`
-- The `[nexus]` repo uses `SigLevel = Required DatabaseOptional` (packages must be signed by the Nexus master key)
-- `release-nexus.sh repo` publishes `nexus.db(.sig)`, `nexus.files(.sig)` and every `.pkg.tar.zst(.sig)` as release assets
-
-Rebuild the keyring after any change with:
-
-```bash
-cd localpkgs/nexus-keyring && GNUPGHOME="$PWD/gnupg" GPGKEY=F4C57604C90E90CD6AB3633F2AA4846E14CBE512 makepkg -f --sign
+```text
+PKGBUILD
+   │
+   ▼
+makepkg
+   │
+   ▼
+Nexus package
+   │
+   ▼
+repo-add
+   │
+   ▼
+nexus.db
 ```
 
-## CI/CD & Development
+---
 
-* **.vscode/**: Complete VS Code config (tasks, debug, snippets, keybindings)
-* **.github/linguist**: GitHub Linguist config for Rust detection
-* **.gitattributes**: Linguist overrides for language detection
-* **.vscode/extensions.json**: Recommended extensions (shellcheck, yaml, gitlens, docker)
-* **GITHUB_ISSUES.md**: 42 issues catalog from code review
-* **create_github_issues.py**: Script to auto-create GitHub issues
-* **.github/linguist**: Linguist override for Rust detection
+# 🧪 Testing
 
-## Known notes
+Nexus provides dedicated ISO testing and utility scripts.
 
-- The installed system's `pacman.conf` is generated from `archiso/pacman.conf` + `pacman-more.conf` by shellprocess scripts
-- Nexus uses its own repo section names (`[nexus]`)
-- Pure Arch base — no CachyOS, Chaotic-AUR, or third-party repos
+Relevant tools include:
+
+```text
+testiso.sh
+util-iso.sh
+util-iso-mount.sh
+util-msg.sh
+```
+
+ISO builds can be tested in virtualized environments before physical
+deployment.
+
+Recommended test environments include:
+
+* QEMU / KVM
+* VirtualBox
+* VMware
+* GNOME Boxes
+* Hyper-V
+
+Testing should cover:
+
+* ISO boot
+* UEFI
+* installation
+* desktop selection
+* online installation
+* offline installation
+* package repository initialization
+* first boot
+* hardware detection
+* networking
+* graphics
+* audio
+* suspend/resume
+
+---
+
+# 📁 Repository Structure
+
+```text
+NexusLinux/
+│
+├── .github/
+├── .vscode/
+│
+├── archiso/
+│   ├── airootfs/
+│   ├── package lists
+│   └── ISO configuration
+│
+├── localpkgs/
+│   ├── nexus-branding/
+│   ├── nexus-wallpapers/
+│   ├── nexus-keyring/
+│   ├── nexus-calamares/
+│   ├── nexus-kde-settings/
+│   ├── nexus-rust-tools/
+│   └── rust-workspace/
+│
+├── machines/
+├── scripts/
+├── testcases/
+├── wallpapers/
+│
+├── build-nexus-iso.sh
+├── build-nexus-repo.sh
+├── build.sh
+├── buildiso.sh
+├── ci.build.sh
+├── release-nexus.sh
+├── testiso.sh
+│
+├── CHANGELOG.md
+├── CONTRIBUTING.md
+├── DEVELOPER_CALL.md
+├── GITHUB_ISSUES.md
+├── SECURITY.md
+├── LICENSE
+└── README.md
+```
+
+The current repository contains dedicated ISO, package, release, testing,
+machine and package-source infrastructure.
+
+---
+
+# 🛠️ Development Stack
+
+Nexus Linux combines several technologies:
+
+| Technology         | Role                        |
+| ------------------ | --------------------------- |
+| **Arch Linux**     | Base distribution           |
+| **Bash**           | Build and automation        |
+| **Rust**           | Native Nexus tooling        |
+| **Zig**            | Native systems development  |
+| **Cargo**          | Rust workspace              |
+| **CMake**          | Native dependency builds    |
+| **Qt**             | Calamares / KDE ecosystem   |
+| **Calamares**      | Graphical installer         |
+| **archiso**        | ISO generation              |
+| **makepkg**        | Arch package building       |
+| **repo-add**       | Package repository creation |
+| **GPG**            | Package signing             |
+| **GitHub Actions** | CI infrastructure           |
+
+---
+
+# 🤝 Contributing
+
+Nexus Linux is an open-source project and contributions are welcome.
+
+The recommended workflow is:
+
+```text
+Fork
+  ↓
+Create a branch
+  ↓
+Make your changes
+  ↓
+Test your changes
+  ↓
+Commit
+  ↓
+Open Pull Request
+  ↓
+Review
+  ↓
+Merge
+```
+
+Before submitting changes, contributors should check the relevant scripts,
+packages and documentation.
+
+Useful project documentation:
+
+* [`CONTRIBUTING.md`](CONTRIBUTING.md)
+* [`SECURITY.md`](SECURITY.md)
+* [`DEVELOPER_CALL.md`](DEVELOPER_CALL.md)
+* [`GITHUB_ISSUES.md`](GITHUB_ISSUES.md)
+
+---
+
+# 🐛 Issues & Bug Reports
+
+If you encounter a problem, please provide as much useful information as
+possible.
+
+Include:
+
+* Nexus Linux version
+* ISO build/version
+* hardware information
+* desktop environment
+* reproduction steps
+* relevant terminal output
+* logs where applicable
+
+For security vulnerabilities, please follow the instructions in
+[`SECURITY.md`](SECURITY.md) instead of publicly exposing sensitive details.
+
+---
+
+# 🚀 Releases
+
+Nexus Linux releases may contain:
+
+* ISO images
+* SHA256 checksums
+* cryptographic signatures
+* package lists
+* package repository artifacts
+* release metadata
+
+Official releases:
+
+**https://github.com/Nexus-Linux-Official/NexusLinux/releases**
+
+---
+
+# 📚 Documentation
+
+| Document                                 | Description             |
+| ---------------------------------------- | ----------------------- |
+| [`CHANGELOG.md`](CHANGELOG.md)           | Version history         |
+| [`CONTRIBUTING.md`](CONTRIBUTING.md)     | Contribution guidelines |
+| [`SECURITY.md`](SECURITY.md)             | Security policy         |
+| [`DEVELOPER_CALL.md`](DEVELOPER_CALL.md) | Development information |
+| [`GITHUB_ISSUES.md`](GITHUB_ISSUES.md)   | Issue catalog           |
+
+---
+
+# 📊 Project Status
+
+Nexus Linux is under active development.
+
+Current areas of development include:
+
+* ISO reliability
+* Calamares integration
+* Nexus package infrastructure
+* Native system tooling
+* Rust development
+* Zig integration
+* Hardware compatibility
+* Desktop integration
+* Security infrastructure
+* Automated testing
+* CI/CD
+* Documentation
+
+The repository currently contains the core components required to build
+Nexus Linux, including its ArchISO configuration, Nexus packages, Rust
+workspace, installer integration, package repository infrastructure and
+release scripts.
+
+---
+
+# 📄 License
+
+Nexus Linux and its individual components may be distributed under different
+licenses depending on the component and its upstream source.
+
+See [`LICENSE`](LICENSE) for the license applicable to this repository.
+
+Upstream projects and packages retain their respective licenses.
+
+Nexus branding, logos and other project assets may be subject to separate
+terms where applicable.
+
+---
+
+<div align="center">
+
+# Nexus Linux
+
+**Pure Arch. Modern Desktop. Native Tooling.**
+
+Rust · Zig · KDE Plasma · Calamares · Arch Linux
+
+<br>
+
+[GitHub](https://github.com/Nexus-Linux-Official/NexusLinux) ·
+[Issues](https://github.com/Nexus-Linux-Official/NexusLinux/issues) ·
+[Releases](https://github.com/Nexus-Linux-Official/NexusLinux/releases)
+
+</div>
