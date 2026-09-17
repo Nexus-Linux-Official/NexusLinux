@@ -13,6 +13,7 @@
   <img src="https://img.shields.io/github/commit-activity/m/Nexus-Linux-Official/NexusLinux?style=for-the-badge" alt="Commit Activity">
 </p>
 
+
 <p>
   <img src="https://img.shields.io/badge/Arch%20Linux-1793D1?style=for-the-badge&logo=arch-linux&logoColor=white" alt="Arch Linux">
   <img src="https://img.shields.io/badge/KDE%20Plasma-1D99F3?style=for-the-badge&logo=kde&logoColor=white" alt="KDE Plasma">
