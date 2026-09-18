@@ -57,9 +57,9 @@ if [ -n "${NEXUS_KEY_PASSPHRASE:-}" ]; then
         # Avoid logging passphrase by using gpg-preset-passphrase directly
         printf '%s' "$NEXUS_KEY_PASSPHRASE" | gpg-preset-passphrase --preset "$_keygrip" 2>/dev/null \
             || printf '%s' "$NEXUS_KEY_PASSPHRASE" | gpg-connect-agent --homedir "$GNUPGHOME" /bye >/dev/null 2>&1 \
-            || echo "UYARI: passphrase gpg-agent'a preset edilemedi (imzalama isteyebilir)" >&2
+            || echo "WARNING: passphrase gpg-agent'a preset edilemedi (imzalama isteyebilir)" >&2
     else
-        echo "UYARI: GPGKEY ($GPGKEY) icin keygrip bulunamadi; imzalama interaktif olabilir" >&2
+        echo "WARNING: GPGKEY ($GPGKEY) icin keygrip bulunamadi; imzalama interaktif olabilir" >&2
     fi
     unset _keygrip NEXUS_KEY_PASSPHRASE
 fi
@@ -80,7 +80,7 @@ _UPSTREAM_KEYS=(
 )
 for _key in "${_UPSTREAM_KEYS[@]}"; do
     gpg --batch --no-tty --recv-keys "$_key" >/dev/null 2>&1 \
-        || echo "UYARI: PGP anahtari alinamadi: $_key (signed source dogrulamasi basarisiz olabilir)" >&2
+        || echo "WARNING: PGP key not found: $_key (signed source verification may fail)" >&2
 done
 
 mkdir -p "$REPO"
@@ -93,6 +93,7 @@ echo "==> Building Nexus fork packages"
 BUILD_ORDER=(
     nexus-wallpapers
     nexus-kde-settings
+    nexus-calamares
 )
 PACKAGE_LIST=("${BUILD_ORDER[@]}")
 for pkgdir in "$PKGS"/*/; do
@@ -144,99 +145,22 @@ if [ -z "$PKGFILES" ]; then
 fi
 
 echo "==> Populating local repository"
+cd "$REPO"
+
+# Copy all built packages (both in pkgdir and pkg/ subdir)
 find "$PKGS" -mindepth 2 -maxdepth 2 -name '*.pkg.tar.zst' ! -path "$PKGS/repo/*" -print0 2>/dev/null | xargs -0 -I{} cp -f {} "$REPO/"
 find "$PKGS" -mindepth 2 -maxdepth 2 -name '*.pkg.tar.zst.sig' ! -path "$PKGS/repo/*" -print0 2>/dev/null | xargs -0 -I{} cp -f {} "$REPO/"
-# -s signs the repository database with the Nexus master key.
-repo-add -q -s -k "$GPGKEY" "$REPO/nexus.db.tar.zst" "$REPO/"*.pkg.tar.zst
+ls -lh *.pkg.tar.zst
+
+# Copy calamares from .calamares-pkgbuild if not already built in localpkgs
+if [ -d "$ROOT/.calamares-pkgbuild" ]; then
+    cp -f "$ROOT/.calamares-pkgbuild"/*.pkg.tar.zst . 2>/dev/null || true
+    cp -f "$ROOT/.calamares-pkgbuild"/pkg/*.pkg.tar.zst . 2>/dev/null || true
+fi
+
+# Rebuild repo database
+echo ">>> Rebuilding repo database..."
+repo-add -q -s -k "$GPGKEY" nexus.db.tar.gz *.pkg.tar.zst
 
 echo "==> Local repo ready: $REPO"
 ls -la "$REPO"/*.pkg.tar.zst
-
-if [ "$APPLY_SWAP" = 1 ]; then
-    echo "==> Applying swap (wiring nexus-* packages into the ISO profile)"
-    # The swap is already applied manually - nexus-* packages are in place.
-    # This section is kept for reference if additional swaps are needed.
-
-    NETINSTALL="archiso/airootfs/usr/share/nexus-calamares/modules/netinstall.yaml"
-    echo "  netinstall.yaml: using nexus-* packages (already configured)"
-
-    for PKG_FILE in archiso/packages.x86_64 archiso/packages_desktop.x86_64 archiso/packages_minimal.x86_64; do
-        [ -f "$PKG_FILE" ] || continue
-        echo "  $PKG_FILE: using nexus-* packages (already configured)"
-    done
-
-    # [nexus] belongs in the LIVE/installed pacman.conf: the (swapped)
-    # netinstall.yaml resolves nexus-* packages from it during the install.
-    LIVE_PACMAN_CONF="archiso/airootfs/etc/pacman.conf"
-    if ! grep -q "^\[nexus\]" "$LIVE_PACMAN_CONF"; then
-        cat >> "$LIVE_PACMAN_CONF" <<EOF
-
-[nexus]
-SigLevel = Optional TrustAll
-# Nexus packages are published as GitHub Release assets (no dedicated mirror
-# yet). pacman appends the db filename (nexus.db) to this URL; GitHub serves
-# the latest release's assets here and follows the redirect transparently.
-# The Nexus master key is populated into the live keyring from
-# /usr/share/pacman/keyrings (calamares-online.sh).
-Server = https://github.com/nexuslinux-os/NexusLinux/releases/latest/download/
-EOF
-        echo "  appended [nexus] repo to $LIVE_PACMAN_CONF"
-    else
-        echo "  [nexus] repo already present in $LIVE_PACMAN_CONF"
-    fi
-
-    # The BUILD pacman.conf needs [nexus] too: the swapped packages*.x86_64
-    # list nexus-* packages that only this repo provides. Point it at the
-    # LOCAL repo built above and skip signature checks (SigLevel=Never), so no
-    # Nexus key is needed in pacstrap's archlinux-only keyring during the
-    # build. The repo never reaches the installed system: the live/installed
-    # [nexus] (airootfs pacman.conf) uses GitHub + the populated keyring.
-    BUILD_PACMAN_CONF="archiso/pacman.conf"
-    if grep -q "^\[nexus\]" "$BUILD_PACMAN_CONF"; then
-        sed -i '/^\[nexus\]/,$d' "$BUILD_PACMAN_CONF"
-    fi
-    cat >> "$BUILD_PACMAN_CONF" <<EOF
-
-[nexus]
-SigLevel = Optional TrustAll
-Server = file://$ROOT/localpkgs/repo
-EOF
-    echo "  appended [nexus] (file://$ROOT/localpkgs/repo, SigLevel=Optional TrustAll) to build pacman.conf ($BUILD_PACMAN_CONF)"
-
-    # Ship the Nexus keyring into the airootfs so `pacman-key --populate
-    # archlinux nexus` (calamares-online.sh) works on the live ISO and the
-    # nexus-keyring package stays consistent with the profile.
-    KEYRINGS_DIR="archiso/airootfs/usr/share/pacman/keyrings"
-    mkdir -p "$KEYRINGS_DIR"
-    cp -f localpkgs/nexus-keyring/nexus.gpg \
-          localpkgs/nexus-keyring/nexus-trusted \
-          localpkgs/nexus-keyring/nexus-revoked "$KEYRINGS_DIR/"
-    echo "  shipped Nexus keyring files to $KEYRINGS_DIR"
-
-    # Ship the nexus repo database AND actual .pkg.tar.zst files into the ISO.
-    # The live system's /etc/pacman.conf points [nexus] at
-    # file:///usr/share/nexus-repo/, and pacstrap_calamares copies this
-    # directory into the install target so --sysroot file:// URLs resolve.
-    # Without the actual package files, pacman sees the packages in the DB
-    # but cannot fetch them (error: "failed to retrieve file ... from disk").
-    NEXUS_REPO_DIR="archiso/airootfs/usr/share/nexus-repo"
-    mkdir -p "$NEXUS_REPO_DIR"
-    cp -f "$REPO/nexus.db" "$REPO/nexus.db.sig" "$NEXUS_REPO_DIR/"
-    cp -f "$REPO/"*.pkg.tar.zst "$REPO/"*.pkg.tar.zst.sig "$NEXUS_REPO_DIR/" 2>/dev/null || true
-    echo "  shipped nexus.db + $(ls "$NEXUS_REPO_DIR/"*.pkg.tar.zst 2>/dev/null | wc -l) packages to $NEXUS_REPO_DIR (file:// for live ISO)"
-    echo "NOTE: OFFLINE installs bake the swapped nexus-* packages into the"
-    echo "      live squashfs (packages*.x86_64 + build [nexus] file:// local"
-    echo "      repo), so they work without a network."
-    echo "      The nexus-repo directory also ships .pkg.tar.zst files for"
-    echo "      pacstrap's file:// resolution via --sysroot."
-    echo "      ONLINE installs resolve nexus-* from GitHub Releases"
-    echo "      (https://github.com/nexuslinux-os/NexusLinux/releases/latest/download/)."
-    echo "      Publish the local repo there first with:"
-    echo "          ./release-nexus.sh repo"
-    echo "      Otherwise ONLINE installs will not find the nexus-* packages."
-    echo "      Packages are signed by the Nexus master key (nexus-keyring:"
-    echo "      pacman-key --lsign-key). SigLevel=Optional TrustAll for [nexus]"
-    echo "      (the key must be in the keyring; populated from the airootfs)."
-else
-    echo "==> Dry run (no swap). Re-run with --apply-swap to wire into the ISO build."
-fi

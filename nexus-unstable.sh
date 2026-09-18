@@ -44,7 +44,7 @@ else
 fi
 
 # Build other packages (continue on failure)
-for pkg in nexus-branding nexus-wallpapers nexus-keyring nexus-calamares nexus-kde-settings; do
+for pkg in nexus-branding nexus-wallpapers nexus-keyring nexus-kde-settings; do
     build_pkg "$LOCALPKGS/$pkg" "$pkg" || echo ">>> $pkg build failed, continuing..."
 done
 
@@ -57,15 +57,10 @@ echo "=== Phase 2: Updating local repository ==="
 cd "$LOCALREPO"
 
 # Copy all built packages (both in dir and in pkg subdir for split packages)
-cp "$LOCALPKGS"/rust-tools/*.pkg.tar.zst . 2>/dev/null || true
-cp "$LOCALPKGS"/rust-tools/pkg/*.pkg.tar.zst . 2>/dev/null || true
 cp "$LOCALPKGS"/nexus-branding/*.pkg.tar.zst . 2>/dev/null || true
 cp "$LOCALPKGS"/nexus-wallpapers/*.pkg.tar.zst . 2>/dev/null || true
 cp "$LOCALPKGS"/nexus-keyring/*.pkg.tar.zst . 2>/dev/null || true
-cp "$LOCALPKGS"/nexus-calamares/*.pkg.tar.zst . 2>/dev/null || true
 cp "$LOCALPKGS"/nexus-kde-settings/*.pkg.tar.zst . 2>/dev/null || true
-cp "$ROOT"/.calamares-pkgbuild/*.pkg.tar.zst . 2>/dev/null || true
-cp "$ROOT"/.calamares-pkgbuild/pkg/*.pkg.tar.zst . 2>/dev/null || true
 ls -lh *.pkg.tar.zst | awk '{print $9, $5}'
 
 # Rebuild repo database

@@ -108,7 +108,6 @@ publish_iso() {
 
     # pkgs.txt: profile packages + netinstall selection, sorted, deduped.
     {
-        grep -rh '^\s*-\s*[a-z0-9@._+-]' archiso/airootfs/usr/share/nexus-calamares/modules/netinstall.yaml | sed 's/^\s*-\s*//'
         cat archiso/packages.x86_64 2>/dev/null || true
         for f in archiso/*/packages.x86_64; do [ -f "$f" ] && cat "$f"; done 2>/dev/null || true
     } | grep -v '^\s*#' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | grep -v '^$' | sort -u > "$(dirname "$iso")/pkgs.txt"

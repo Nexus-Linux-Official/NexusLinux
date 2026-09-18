@@ -13,15 +13,13 @@ ROOT="$(pwd)"
 PROFILE="${1:-desktop}"
 LOCALREPO="$ROOT/localrepo"
 LOCALREPO_NAME="nexus"
-CALAMARES_VERSION="3.3.12"
-CALAMARES_PKGBUILD_DIR="$ROOT/.calamares-pkgbuild"
 
 for dep in mkarchiso repo-add makepkg; do
     command -v "$dep" >/dev/null 2>&1 || { echo "ERROR: missing dependency: $dep" >&2; exit 1; }
 done
 
-# Install build dependencies FIRST (including Calamares build deps + pacman-contrib for repo-add)
-echo "==> [1/4] Installing build dependencies"
+# Install build dependencies FIRST
+echo "==> [1/3] Installing build dependencies"
 sudo pacman -S --needed --noconfirm \
     archiso base-devel git pacman-contrib \
     squashfs-tools dosfstools libisoburn \
@@ -43,80 +41,13 @@ command -v makepkg >/dev/null 2>&1 || { echo "ERROR: makepkg not found after bas
 # mkarchiso cannot "see" packages that only sit in /var/cache/pacman/pkg or on
 # the host filesystem - it needs a real repo database (repo-add) that
 # pacman.conf points to, containing ACTUAL .pkg.tar.zst files.
-# Check for existing Calamares package BEFORE cleaning (avoid dead code).
-CALAMARES_EXISTS=false
-if ls "$LOCALREPO"/calamares-*.pkg.tar.zst >/dev/null 2>&1; then
-    CALAMARES_EXISTS=true
-fi
 echo "==> Preparing local pacman repo at $LOCALREPO"
 rm -rf "$LOCALREPO"
 mkdir -p "$LOCALREPO"
-# Restore Calamares if it existed (avoid rebuilding)
-if [ "$CALAMARES_EXISTS" = true ] && ls "$CALAMARES_PKGBUILD_DIR"/calamares-*.pkg.tar.zst >/dev/null 2>&1; then
-    cp -f "$CALAMARES_PKGBUILD_DIR"/calamares-*.pkg.tar.zst "$LOCALREPO/"
-    echo "==> Calamares package restored from previous build"
-fi
 
-# ---------------------------------------------------------------------------
-# Build Calamares AS A PACKAGE (not "sudo make install" onto the host).
-# mkarchiso builds the ISO in its own clean chroot and only knows about
-# packages available via pacman repos - it does not care what is installed
-# on the host machine. So Calamares must become a real .pkg.tar.zst that we
-# add to our local repo, exactly like nexus-branding etc.
-# ---------------------------------------------------------------------------
-build_calamares_package() {
-    echo "==> [2/4] Packaging Calamares $CALAMARES_VERSION"
-    rm -rf "$CALAMARES_PKGBUILD_DIR"
-    mkdir -p "$CALAMARES_PKGBUILD_DIR"
-    cat > "$CALAMARES_PKGBUILD_DIR/PKGBUILD" <<EOF
-pkgname=calamares
-pkgver=${CALAMARES_VERSION}
-pkgrel=1
-pkgdesc="Distribution-independent installer framework (Nexus trimmed build)"
-arch=('x86_64')
-url="https://calamares.io"
-license=('GPL3')
-depends=('qt6-base' 'qt6-declarative' 'qt6-svg' 'kconfig' 'kcoreaddons' 'kcrash'
-         'ki18n' 'kparts' 'kpmcore' 'kservice' 'kwidgetsaddons' 'libpwquality'
-         'polkit-qt6' 'yaml-cpp' 'boost-libs' 'python')
-makedepends=('cmake' 'extra-cmake-modules' 'qt6-tools' 'boost' 'jsoncpp')
-source=("https://codeberg.org/Calamares/calamares/archive/v\${pkgver}.tar.gz")
-sha256sums=('c7e635a2a0bed0078a50b8deea310eb2c09bf9d807bbeb4c8bcda4f85771fc7c')
-
-
-build() {
-  cd "\$srcdir/calamares"
-  mkdir -p build && cd build
-  cmake .. \\
-    -DCMAKE_INSTALL_PREFIX=/usr \\
-    -DCMAKE_BUILD_TYPE=Release \\
-    -DINSTALL_CONFIG=ON \\
-    -DSKIP_MODULES="webview interactiveterminal initramfs initramfscfg \\
-        partition rawfs mount welcomeq license keyboard users usersq locale \\
-        networkcfg displaymanager bootloader grub grubcfg efi_bootloader \\
-        services-openrc services-systemd fstab fsck keyboardq summaryq"
-  make
-}
-
-
-package() {
-  cd "\$srcdir/calamares/build"
-  make DESTDIR="\$pkgdir" install
-}
-EOF
-    ( cd "$CALAMARES_PKGBUILD_DIR" && makepkg -sf --noconfirm )
-    cp -f "$CALAMARES_PKGBUILD_DIR"/calamares-*.pkg.tar.zst "$LOCALREPO/"
-}
-
-if [ "$CALAMARES_EXISTS" = true ]; then
-    echo "==> [2/4] Calamares package already in localrepo (restored), skipping rebuild"
-else
-    build_calamares_package
-fi
-
-# Build local Nexus packages (branding, wallpapers, keyring, calamares config)
-echo "==> [3/4] Building local Nexus packages"
-for pkg in nexus-branding nexus-wallpapers nexus-keyring nexus-calamares; do
+# Build local Nexus packages (branding, wallpapers, keyring, kde-settings, calamares)
+echo "==> [2/3] Building local Nexus packages"
+for pkg in nexus-branding nexus-wallpapers nexus-keyring nexus-kde-settings nexus-calamares; do
     if [ -d "$ROOT/localpkgs/$pkg" ]; then
         echo "  building $pkg"
         ( cd "$ROOT/localpkgs/$pkg" && makepkg -sf --noconfirm )
@@ -126,6 +57,19 @@ done
 
 # Build the repo database so pacman/mkarchiso can resolve these as install targets
 echo "==> Building local repo database ($LOCALREPO_NAME.db.tar.gz)"
+( cd "$LOCALREPO" && repo-add --new "$LOCALREPO_NAME.db.tar.gz" ./*.pkg.tar.zst )
+
+# Build nexus-calamares from .calamares-pkgbuild if available
+if [ -d "$ROOT/.calamares-pkgbuild" ]; then
+    echo "==> Building nexus-calamares from source"
+    if [ -d "$ROOT/.calamares-pkgbuild/calamares" ]; then
+        ( cd "$ROOT/.calamares-pkgbuild/calamares" && makepkg -sf --noconfirm )
+    fi
+    cp -f "$ROOT/.calamares-pkgbuild"/*.pkg.tar.zst "$LOCALREPO/" 2>/dev/null || true
+    cp -f "$ROOT/.calamares-pkgbuild"/pkg/*.pkg.tar.zst "$LOCALREPO/" 2>/dev/null || true
+fi
+
+# Rebuild repo database after adding calamares
 ( cd "$LOCALREPO" && repo-add --new "$LOCALREPO_NAME.db.tar.gz" ./*.pkg.tar.zst )
 
 # Prepare a temp pacman.conf with [nexus] repo for the build.
@@ -147,17 +91,7 @@ TMP_PACMAN_CONF="$(mktemp)"
 export NEXUS_TMP_PACMAN_CONF="$TMP_PACMAN_CONF"
 echo "==> Prepared temp pacman.conf with [$LOCALREPO_NAME] repo at $TMP_PACMAN_CONF"
 
-echo "==> [4/4] Building ISO (profile: $PROFILE)"
-
-# Relocate any stray calamares module copies to staging path
-CALAMARES_CONFLICT="$ROOT/archiso/airootfs/etc/calamares/modules"
-CALAMARES_STAGE="$ROOT/archiso/airootfs/usr/share/nexus-calamares/modules"
-for _f in netinstall.yaml packagechooser_desktop.conf; do
-    if [ -f "$CALAMARES_CONFLICT/$_f" ]; then
-        echo "    -> relocating $_f to $CALAMARES_STAGE"
-        mv -f "$CALAMARES_CONFLICT/$_f" "$CALAMARES_STAGE/$_f"
-    fi
-done
+echo "==> [3/3] Building ISO (profile: $PROFILE)"
 
 ./buildiso.sh -p "$PROFILE" -v 2>&1 | tee "$ROOT/build.log"
 
@@ -171,50 +105,21 @@ if [ -n "$ISO_PATH" ]; then
         python3 << 'PY' > "$ROOT/out/$PROFILE/pkgs.txt"
 import yaml, pathlib, re
 pkgs = set()
-# Parse netinstall.yaml properly
-try:
-    data = yaml.safe_load(open(f"{pathlib.Path.cwd()}/archiso/airootfs/usr/share/nexus-calamares/modules/netinstall.yaml"))
-    def collect(obj):
-        if isinstance(obj, dict):
-            for k, v in obj.items():
-                if k == "packages" and isinstance(v, list):
-                    for p in v:
-                        if isinstance(p, str):
-                            pkgs.add(p.strip())
-                else:
-                    collect(v)
-        elif isinstance(obj, list):
-            for item in obj:
-                collect(item)
-    collect(data)
-except Exception as e:
-    # Fallback to grep if YAML parsing fails
-    import subprocess, shlex
+# Parse packages from the package lists
+for pkg_file in ["archiso/packages.x86_64", "archiso/packages_desktop.x86_64", "archiso/packages_minimal.x86_64"]:
     try:
-        out = subprocess.check_output(["grep", "-rh", r"^\s*-\s*[a-z0-9@._+-]", "archiso/airootfs/usr/share/nexus-calamares/modules/netinstall.yaml"], text=True)
-        for line in out.splitlines():
-            m = re.match(r"^\s*-\s*([a-z0-9@._+-]+)", line)
-            if m:
-                pkgs.add(m.group(1))
+        for line in open(pkg_file):
+            line=line.strip()
+            if line and not line.startswith("#"):
+                pkgs.add(line)
     except:
         pass
-# Add base packages
-try:
-    for line in open("archiso/packages.x86_64"):
-        line=line.strip()
-        if line and not line.startswith("#"):
-            pkgs.add(line)
-except:
-    pass
 for p in sorted(pkgs):
     print(p)
 PY
     else
-        # Fallback: legacy grep method
-        {
-            grep -rh '^\s*-\s*[a-z0-9@._+-]' "$ROOT/archiso/airootfs/usr/share/nexus-calamares/modules/netinstall.yaml" | sed 's/^\s*-\s*//'
-            cat "$ROOT/archiso/packages.x86_64" 2>/dev/null || true
-        } | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | grep -v '^$' | sort -u > "$ROOT/out/$PROFILE/pkgs.txt"
+        # Fallback: simple grep method
+        cat "$ROOT/archiso/packages.x86_64" "$ROOT/archiso/packages_desktop.x86_64" "$ROOT/archiso/packages_minimal.x86_64" 2>/dev/null | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | grep -v '^$' | grep -v '^#' | sort -u > "$ROOT/out/$PROFILE/pkgs.txt"
     fi
     echo "    - ISO:        $ISO_PATH"
     echo "    - SHA256:     $ROOT/out/$PROFILE/SHA256SUMS"
