@@ -30,8 +30,4 @@ file_permissions=(
   ["/usr/local/bin/nvidia-module-loader"]="0:0:755"
   ["/usr/local/bin/pkexec-wrapper"]="0:0:755"
   ["/root/customize_airootfs.sh"]="0:0:755"
-  ["/usr/local/bin/calamares-online.sh"]="0:0:755"
-  ["/usr/local/bin/calamares-offline.sh"]="0:0:755"
-  ["/usr/local/bin/launch-calamares.sh"]="0:0:755"
-  ["/usr/share/nexus-calamares/write-os-release.sh"]="0:0:755"
 )
